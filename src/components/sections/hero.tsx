@@ -1,8 +1,85 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { ArrowRight, Terminal } from "lucide-react"
 import Image from "next/image"
+
+function TypewriterHeading() {
+  const [text1, setText1] = useState("")
+  const [text2, setText2] = useState("")
+  const [phase, setPhase] = useState(0) // 0: wait for loader, 1: typing 1, 2: typing 2, 3: paused, 4: deleting 2
+  
+  const fullText1 = "Hello, I'm"
+  const fullText2 = "Delvin."
+  
+  useEffect(() => {
+    let timeout: NodeJS.Timeout
+    
+    if (phase === 0) {
+      timeout = setTimeout(() => setPhase(1), 3200) // Wait 3.2s for loading screen to finish
+    } else if (phase === 1) {
+      if (text1 === fullText1) {
+        timeout = setTimeout(() => setPhase(2), 300)
+      } else {
+        timeout = setTimeout(() => {
+          setText1(fullText1.substring(0, text1.length + 1))
+        }, 80)
+      }
+    } else if (phase === 2) {
+      if (text2 === fullText2) {
+        timeout = setTimeout(() => setPhase(3), 2500)
+      } else {
+        timeout = setTimeout(() => {
+          setText2(fullText2.substring(0, text2.length + 1))
+        }, 120)
+      }
+    } else if (phase === 3) {
+      timeout = setTimeout(() => setPhase(4), 100)
+    } else if (phase === 4) {
+      if (text2 === "") {
+        timeout = setTimeout(() => setPhase(2), 600)
+      } else {
+        timeout = setTimeout(() => {
+          setText2(fullText2.substring(0, text2.length - 1))
+        }, 60)
+      }
+    }
+    
+    return () => clearTimeout(timeout)
+  }, [text1, text2, phase])
+  
+  return (
+    <motion.h1
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 3.2 }} // Delay fade-in to match typing start
+      className="text-6xl md:text-7xl lg:text-[5.5rem] font-bold tracking-tight mb-4 leading-[1.1] min-h-[2.2em]"
+    >
+      <span className="text-white">
+        {text1}
+        {(phase === 0 || phase === 1) && (
+          <motion.span 
+            animate={{ opacity: [1, 0, 1] }}
+            transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}
+            className="inline-block w-[4px] h-[0.9em] bg-white ml-2 -mb-2"
+          />
+        )}
+      </span> 
+      <br />
+      <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-blue-300">
+        {text2}
+      </span>
+      {phase > 1 && (
+        <motion.span 
+          animate={{ opacity: [1, 0, 1] }}
+          transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}
+          className="inline-block w-[5px] h-[0.9em] bg-blue-400 ml-3 -mb-2"
+        />
+      )}
+    </motion.h1>
+  )
+}
 
 export function HeroSection() {
   return (
@@ -16,41 +93,35 @@ export function HeroSection() {
           {/* Left Column: Content */}
           <div className="flex flex-col items-center lg:items-start text-center lg:text-left order-2 lg:order-1">
             
-            {/* Eyebrow / Tags */}
+            {/* Status Pill */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="flex flex-wrap justify-center lg:justify-start items-center gap-4 mb-8"
+              className="flex justify-center lg:justify-start mb-8"
             >
-              <div className="inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium text-blue-400 bg-blue-500/10 border border-blue-500/20 rounded-full">
-                <Terminal size={12} className="mr-2" />
-                Available for Work
+              <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md shadow-lg">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                </span>
+                <span className="text-sm font-medium text-slate-200 tracking-wide uppercase text-[0.7rem]">
+                  Available for work
+                </span>
               </div>
             </motion.div>
             
             {/* Main Heading */}
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter mb-6 leading-tight"
-            >
-              Architecting <br className="hidden lg:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">
-                full-stack
-              </span> <br className="hidden lg:block" />
-              digital experiences.
-            </motion.h1>
+            <TypewriterHeading />
             
             {/* Paragraph */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-lg md:text-xl text-slate-400 max-w-xl mb-10 leading-relaxed font-light"
+              className="text-xl md:text-2xl text-slate-400 max-w-xl mb-10 leading-relaxed font-normal"
             >
-              I am a full stack developer who bridges the gap between robust backend systems and intuitive user interfaces. From database design to pixel-perfect frontends, I build complete, high-performance web applications that scale.
+              A full-stack website developer with a passion for crafting unique digital experiences.
             </motion.p>
             
             {/* Buttons */}
@@ -84,10 +155,19 @@ export function HeroSection() {
             className="relative mx-auto w-full lg:max-w-xl order-1 lg:order-2 mb-10 lg:mb-0"
           >
             {/* Background glow behind editor */}
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000" />
+            <div className="absolute -inset-2 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-[24px] blur-xl opacity-20 group-hover:opacity-40 transition duration-1000" />
             
-            {/* The Editor Window */}
-            <div className="relative rounded-2xl border border-white/10 bg-[#0d1117]/90 backdrop-blur-xl overflow-hidden shadow-2xl font-mono text-sm">
+            {/* The Editor Window Wrapper with Animated Border */}
+            <div className="relative rounded-2xl p-[1px] overflow-hidden shadow-2xl">
+              {/* Rotating Gradient */}
+              <motion.div 
+                className="absolute inset-[-100%] w-[300%] h-[300%] origin-center bg-[conic-gradient(from_0deg_at_50%_50%,#3b82f6_0%,transparent_10%,transparent_40%,#a855f7_50%,transparent_60%,transparent_90%,#06b6d4_100%)] opacity-80"
+                animate={{ rotate: 360 }}
+                transition={{ repeat: Infinity, duration: 5, ease: "linear" }}
+              />
+              
+              {/* The Editor Window */}
+              <div className="relative rounded-2xl bg-[#0d1117] overflow-hidden font-mono text-sm h-full w-full">
               
               {/* Window Header */}
               <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-black/20">
@@ -134,6 +214,7 @@ export function HeroSection() {
               </div>
               
             </div>
+            </div>
           </motion.div>
 
         </div>
@@ -146,7 +227,7 @@ export function HeroSection() {
         transition={{ delay: 1, duration: 1 }}
         className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
       >
-        <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">Scroll</span>
+        <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">Scroll to discover</span>
         <div className="w-[1px] h-8 bg-border relative overflow-hidden">
           <motion.div
             className="w-full h-1/2 bg-blue-500 absolute top-0"

@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Download, Paperclip } from "lucide-react"
+import { Download, Paperclip, Terminal } from "lucide-react"
 import { SectionHeader } from "../ui/section-header"
 
 import Image from "next/image"
@@ -23,24 +23,56 @@ export function AboutSection() {
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: false, margin: "-100px" }}
             transition={{ duration: 0.5 }}
-            className="space-y-6"
+            className="relative w-full"
           >
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              I'm a full stack developer passionate about building fast, scalable, and beautiful web applications.
-            </p>
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              I handle the entire development process—from designing complex databases and secure APIs on the backend, to crafting pixel-perfect, interactive React interfaces on the frontend. I believe that writing clean, maintainable code is just as important as the end-user experience.
-            </p>
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              Beyond just writing code, I love solving hard architectural problems and bridging the gap between design and engineering. Whether it's optimizing slow database queries or fine-tuning CSS animations, I'm driven by the details.
-            </p>
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              Right now, I'm especially focused on exploring real-time features, modern web architectures, and pushing the boundaries of what's possible in human-centered digital products.
-            </p>
+            {/* Terminal Window Wrapper */}
+            <div className="relative rounded-2xl bg-[#0d1117] border border-white/10 overflow-hidden shadow-2xl font-mono text-sm leading-relaxed group">
+              {/* Window Header */}
+              <div className="relative flex items-center justify-between px-4 py-3 border-b border-white/5 bg-black/40">
+                <div className="flex gap-2">
+                  <div className="w-3 h-3 rounded-full bg-red-500/80 border border-black/20" />
+                  <div className="w-3 h-3 rounded-full bg-yellow-500/80 border border-black/20" />
+                  <div className="w-3 h-3 rounded-full bg-green-500/80 border border-black/20" />
+                </div>
+                <div className="flex items-center gap-2 text-xs text-slate-400 font-sans tracking-wide">
+                  <Terminal size={14} />
+                  <span>about_me.md</span>
+                </div>
+                <div className="w-12" />
+              </div>
+              
+              {/* Terminal Content */}
+              <div className="relative p-6 sm:p-8 overflow-x-auto text-slate-300 space-y-6">
+                <p>
+                  <span className="text-pink-400 font-bold">#</span> <span className="text-cyan-300 font-bold text-base tracking-wide">Introduction</span><br/>
+                  <span className="inline-block mt-2 text-slate-400">
+                    I'm a full stack developer passionate about building fast, scalable, and beautiful web applications. Carrying the "Will of D" — where D stands for Developer — I'm on a journey to conquer the digital Grand Line.
+                  </span>
+                </p>
+                <p>
+                  <span className="text-pink-400 font-bold">##</span> <span className="text-yellow-300 font-semibold tracking-wide">What I Do</span><br/>
+                  <span className="inline-block mt-2 text-slate-400">
+                    I handle the entire development process—from designing complex databases and secure APIs on the backend, to crafting pixel-perfect, interactive React interfaces on the frontend. I believe that writing clean, maintainable code is just as important as the end-user experience.
+                  </span>
+                </p>
+                <p>
+                  <span className="text-pink-400 font-bold">##</span> <span className="text-yellow-300 font-semibold tracking-wide">My Philosophy</span><br/>
+                  <span className="inline-block mt-2 text-slate-400">
+                    Beyond just writing code, I love solving hard architectural problems and bridging the gap between design and engineering. Whether it's optimizing slow database queries or fine-tuning CSS animations, I'm driven by the details.
+                  </span>
+                </p>
+                <p>
+                  <span className="text-pink-400 font-bold">##</span> <span className="text-yellow-300 font-semibold tracking-wide">Current Focus</span><br/>
+                  <span className="inline-block mt-2 text-slate-400">
+                    Right now, I'm especially focused on exploring real-time features, modern web architectures, and pushing the boundaries of what's possible in human-centered digital products.
+                  </span>
+                </p>
+              </div>
+            </div>
             
-            <div className="pt-4">
+            <div className="pt-8">
               <a
                 href="/resume.pdf"
                 target="_blank"
@@ -56,9 +88,9 @@ export function AboutSection() {
             initial={{ opacity: 0, scale: 0.9, rotate: -5 }}
             whileInView={{ opacity: 1, scale: 1, rotate: 2 }}
             whileHover={{ scale: 1.05, rotate: -2, y: -8 }}
-            viewport={{ once: true }}
+            viewport={{ once: false, margin: "-50px" }}
             transition={{ type: "spring", duration: 0.8 }}
-            className="relative mx-auto w-full max-w-[340px] mt-8 lg:-mt-12 group cursor-pointer"
+            className="relative mx-auto w-full max-w-[340px] mt-8 lg:-mt-12 group cursor-default"
           >
             {/* Masking Tape */}
             <div className="absolute -top-4 right-12 w-24 h-8 bg-yellow-100/90 rotate-[-8deg] z-20 shadow-sm border border-yellow-200/50 mix-blend-overlay" />
@@ -83,7 +115,7 @@ export function AboutSection() {
             
             {/* Skewed Badge */}
             <div className="absolute -bottom-6 right-0 bg-white border-2 border-slate-800 px-4 py-2 font-mono text-xs font-bold text-slate-800 uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(30,41,59,1)] rotate-[-4deg] z-20">
-              FULL STACK DEV 💻
+              WILL OF D(EVELOPER) ☠️
             </div>
           </motion.div>
         </div>

@@ -40,7 +40,7 @@ export function ContactSection() {
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: false, margin: "-100px" }}
             transition={{ duration: 0.5 }}
           >
             <h3 className="text-3xl font-bold mb-6">Let's talk about your project</h3>
@@ -99,7 +99,7 @@ export function ContactSection() {
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: false, margin: "-100px" }}
             transition={{ duration: 0.5 }}
           >
             <form onSubmit={handleSubmit} className="glass-card p-8 rounded-2xl space-y-6">

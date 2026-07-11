@@ -55,7 +55,7 @@ export function SkillsSection({ skills }: { skills: SkillCategory[] }) {
               key={category.title}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
+              viewport={{ once: false, margin: "-50px" }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className="glass-card rounded-2xl p-6 group hover:-translate-y-2 transition-all duration-300 relative overflow-hidden"
             >
@@ -75,7 +75,7 @@ export function SkillsSection({ skills }: { skills: SkillCategory[] }) {
                       key={skill}
                       initial={{ opacity: 0, x: -10 }}
                       whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
+                      viewport={{ once: false }}
                       transition={{ delay: 0.3 + (i * 0.05) }}
                       className="flex items-center text-muted-foreground group-hover:text-foreground transition-colors"
                     >

@@ -44,7 +44,7 @@ export function ServicesSection() {
               key={service.title}
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true, margin: "-50px" }}
+              viewport={{ once: false, margin: "-50px" }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className="glass-card rounded-2xl p-8 group hover:bg-surface/50 transition-colors duration-300 border border-border/50"
             >

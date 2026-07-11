@@ -35,7 +35,7 @@ export function ExperienceSection({ experiences }: { experiences: Experience[] }
                 key={exp.id}
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
+                viewport={{ once: false, margin: "-100px" }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 className={`flex flex-col md:flex-row relative gap-8 md:gap-0 ${
                   index % 2 === 0 ? "md:flex-row-reverse" : ""

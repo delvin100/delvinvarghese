@@ -3,14 +3,36 @@
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 
+const greetings = [
+  "Hello",
+  "Hola",
+  "Bonjour",
+  "Ciao",
+  "こんにちは",
+  "مرحبا",
+  "Привет",
+  "안녕하세요",
+  "നമസ്കാരം"
+]
+
 export function LoadingScreen() {
   const [isLoading, setIsLoading] = useState(true)
+  const [index, setIndex] = useState(0)
 
   useEffect(() => {
-    // Simulate loading time to show the animation
+    if (index === greetings.length - 1) return
+
+    const timeout = setTimeout(() => {
+      setIndex((prev) => prev + 1)
+    }, 200)
+
+    return () => clearTimeout(timeout)
+  }, [index])
+
+  useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false)
-    }, 2000)
+    }, 2500)
 
     return () => clearTimeout(timer)
   }, [])
@@ -19,57 +41,23 @@ export function LoadingScreen() {
     <AnimatePresence>
       {isLoading && (
         <motion.div
-          initial={{ opacity: 1 }}
-          exit={{ opacity: 0, transition: { duration: 0.8, ease: "easeInOut" } }}
-          className="fixed inset-0 z-[200] bg-background flex flex-col items-center justify-center"
+          initial={{ y: 0 }}
+          exit={{ y: "-100%", transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } }}
+          className="fixed inset-0 z-[200] bg-[#0a0a0a] flex items-center justify-center"
         >
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="relative flex items-center justify-center"
-          >
-            {/* Outer spinning ring */}
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-              className="absolute w-32 h-32 rounded-full border-t-2 border-r-2 border-primary"
-            />
+          {/* The Text container is perfectly centered */}
+          <div className="relative flex items-center justify-center text-4xl sm:text-5xl font-medium text-slate-200">
+            {/* The Dot is absolutely positioned to the left so it doesn't unbalance the text centering */}
+            <span className="absolute right-full mr-4 sm:mr-6 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-slate-300" />
             
-            {/* Inner spinning ring (opposite direction) */}
-            <motion.div
-              animate={{ rotate: -360 }}
-              transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-              className="absolute w-24 h-24 rounded-full border-b-2 border-l-2 border-secondary"
-            />
-            
-            {/* Center Logo/Text */}
-            <motion.div
-              animate={{ opacity: [0.5, 1, 0.5] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              className="text-2xl font-bold tracking-tighter"
-            >
-              <span className="text-primary">&lt;</span>
-              Dev
-              <span className="text-primary">/&gt;</span>
-            </motion.div>
-          </motion.div>
-          
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="mt-12 overflow-hidden h-1 w-48 bg-muted rounded-full"
-          >
-            <motion.div
-              initial={{ x: "-100%" }}
-              animate={{ x: "0%" }}
-              transition={{ duration: 1.5, ease: "easeOut" }}
-              className="h-full bg-gradient-to-r from-primary to-secondary w-full"
-            />
-          </motion.div>
+            {/* Instantly snapping text */}
+            <span className="text-center">
+              {greetings[index]}
+            </span>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
   )
 }
+

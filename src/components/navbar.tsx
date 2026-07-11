@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Menu, X, Moon, Sun } from "lucide-react"
-import { useTheme } from "next-themes"
+import { Menu, X } from "lucide-react"
 import Link from "next/link"
 
 const navLinks = [
@@ -18,7 +17,6 @@ const navLinks = [
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -30,10 +28,6 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark")
-  }
-
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -43,11 +37,17 @@ export function Navbar() {
       }`}
     >
       <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
-        <Link href="/" className="text-2xl font-bold tracking-tighter">
-          <span className="text-primary">&lt;</span>
-          Delvin Varghese
-          <span className="text-primary">/&gt;</span>
-        </Link>
+        <div className="relative flex items-center gap-3 text-[1.35rem] font-medium tracking-wide group cursor-default">
+          {/* Luffy running animation */}
+          <div className="absolute -top-20 left-6 w-32 h-32 pointer-events-none z-10 transition-transform duration-300 group-hover:-translate-y-2">
+            <img 
+              src="/luffy_custom.gif" 
+              alt="Luffy Custom" 
+              className="w-full h-full object-contain scale-[1.8] drop-shadow-lg"
+            />
+          </div>
+          <span className="text-slate-300 ml-8">Delvin Varghese</span>
+        </div>
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-8">
@@ -63,25 +63,9 @@ export function Navbar() {
               </li>
             ))}
           </ul>
-          
-          <button
-            onClick={toggleTheme}
-            className="p-2 rounded-full hover:bg-muted transition-colors interactive"
-            aria-label="Toggle theme"
-          >
-            {mounted && theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
-          </button>
         </nav>
 
-        {/* Mobile Nav Toggle */}
         <div className="flex items-center gap-4 md:hidden">
-          <button
-            onClick={toggleTheme}
-            className="p-2 rounded-full hover:bg-muted transition-colors"
-            aria-label="Toggle theme"
-          >
-            {mounted && theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
-          </button>
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="p-2 text-foreground"
