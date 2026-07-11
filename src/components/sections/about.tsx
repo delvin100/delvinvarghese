@@ -10,7 +10,14 @@ export function AboutSection() {
   return (
     <section id="about" className="py-24 relative z-10">
       <div className="container mx-auto px-6 md:px-12">
-        <SectionHeader title="About Me" />
+        <SectionHeader 
+          title="About Me" 
+          subtitle={
+            <span className="font-handwriting text-3xl text-primary/80 rotate-[-2deg] inline-block mt-2">
+              building stuff so I don't have to touch grass.
+            </span>
+          } 
+        />
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mt-12">
           <motion.div

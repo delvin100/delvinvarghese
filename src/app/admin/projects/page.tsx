@@ -1,9 +1,10 @@
 import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Plus, Pencil, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import { deleteProject } from '@/app/actions/portfolio'
+import { GitHubSyncButton } from '@/components/admin/github-sync-button'
 import {
   Table,
   TableBody,
@@ -34,12 +35,15 @@ export default async function AdminProjectsPage() {
             Manage the projects displayed on your portfolio.
           </p>
         </div>
-        <Link href="/admin/projects/new">
-          <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            Add Project
-          </Button>
-        </Link>
+        <div className="flex items-center gap-4">
+          <GitHubSyncButton />
+          <Link href="/admin/projects/new">
+            <Button>
+              <Plus className="mr-2 h-4 w-4" />
+              Add Project
+            </Button>
+          </Link>
+        </div>
       </div>
 
       <Card>
@@ -81,17 +85,15 @@ export default async function AdminProjectsPage() {
                       )}
                     </TableCell>
                     <TableCell className="text-right">
-                      <Link href={`/admin/projects/${project.id}`}>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <Pencil className="h-4 w-4 text-blue-500" />
-                          <span className="sr-only">Edit</span>
-                        </Button>
+                      <Link href={`/admin/projects/${project.id}`} className={buttonVariants({ variant: "ghost", size: "icon", className: "h-8 w-8" })}>
+                        <Pencil className="h-4 w-4 text-blue-500" />
+                        <span className="sr-only">Edit</span>
                       </Link>
                       <form action={async () => {
                         'use server'
                         await deleteProject(project.id)
                       }} className="inline-block">
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:text-red-700">
+                        <Button type="submit" variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:text-red-700">
                           <Trash2 className="h-4 w-4" />
                           <span className="sr-only">Delete</span>
                         </Button>

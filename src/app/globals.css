@@ -238,6 +238,8 @@
 
   --font-sans: var(--font-sans);
 
+  --font-handwriting: var(--font-caveat);
+
   --color-sidebar-ring: var(--sidebar-ring);
 
   --color-sidebar-border: var(--sidebar-border);

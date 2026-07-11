@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Plus, Pencil, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import { deleteExperience } from '@/app/actions/portfolio'
@@ -76,17 +76,15 @@ export default async function AdminExperiencePage() {
                       {exp.end_date ? ` - ${new Date(exp.end_date).toLocaleDateString()}` : ' - Present'}
                     </TableCell>
                     <TableCell className="text-right">
-                      <Link href={`/admin/experience/${exp.id}`}>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <Pencil className="h-4 w-4 text-blue-500" />
-                          <span className="sr-only">Edit</span>
-                        </Button>
+                      <Link href={`/admin/experience/${exp.id}`} className={buttonVariants({ variant: "ghost", size: "icon", className: "h-8 w-8" })}>
+                        <Pencil className="h-4 w-4 text-blue-500" />
+                        <span className="sr-only">Edit</span>
                       </Link>
                       <form action={async () => {
                         'use server'
                         await deleteExperience(exp.id)
                       }} className="inline-block">
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:text-red-700">
+                        <Button type="submit" variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:text-red-700">
                           <Trash2 className="h-4 w-4" />
                           <span className="sr-only">Delete</span>
                         </Button>

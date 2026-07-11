@@ -5,7 +5,7 @@ import { motion } from "framer-motion"
 
 interface SectionHeaderProps {
   title: string
-  subtitle?: string
+  subtitle?: ReactNode
   centered?: boolean
 }
 
@@ -29,7 +29,7 @@ export function SectionHeader({ title, subtitle, centered = false }: SectionHead
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-muted-foreground text-lg max-w-2xl mx-auto"
+          className={`text-muted-foreground text-lg max-w-2xl ${centered ? "mx-auto" : ""}`}
         >
           {subtitle}
         </motion.p>

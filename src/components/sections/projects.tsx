@@ -55,7 +55,7 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
                   {project.tags?.map(tag => (
                     <span 
                       key={tag} 
-                      className="px-3 py-1 text-xs font-medium bg-secondary/10 text-secondary border border-secondary/20 rounded-full"
+                      className="px-3 py-1 text-xs font-medium bg-primary/10 text-primary border border-primary/20 rounded-full shadow-sm"
                     >
                       {tag}
                     </span>
