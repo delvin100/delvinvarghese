@@ -6,15 +6,16 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
-export default async function EditSkillPage({ params }: { params: { id: string } }) {
+export default async function EditSkillPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const supabase = await createClient()
-  const { data: skill, error } = await supabase.from('skills').select('*').eq('id', params.id).single()
+  const { data: skill, error } = await supabase.from('skills').select('*').eq('id', id).single()
 
   if (error || !skill) {
     redirect('/admin/skills')
   }
 
-  const updateSkillWithId = updateSkill.bind(null, params.id)
+  const updateSkillWithId = updateSkill.bind(null, id)
 
   return (
     <div className="space-y-6 max-w-xl mx-auto">

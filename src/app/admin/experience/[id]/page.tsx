@@ -7,15 +7,16 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
-export default async function EditExperiencePage({ params }: { params: { id: string } }) {
+export default async function EditExperiencePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const supabase = await createClient()
-  const { data: experience, error } = await supabase.from('experience').select('*').eq('id', params.id).single()
+  const { data: experience, error } = await supabase.from('experience').select('*').eq('id', id).single()
 
   if (error || !experience) {
     redirect('/admin/experience')
   }
 
-  const updateExperienceWithId = updateExperience.bind(null, params.id)
+  const updateExperienceWithId = updateExperience.bind(null, id)
 
   return (
     <div className="space-y-6 max-w-2xl mx-auto">

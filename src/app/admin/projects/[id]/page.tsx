@@ -7,15 +7,16 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
-export default async function EditProjectPage({ params }: { params: { id: string } }) {
+export default async function EditProjectPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const supabase = await createClient()
-  const { data: project, error } = await supabase.from('projects').select('*').eq('id', params.id).single()
+  const { data: project, error } = await supabase.from('projects').select('*').eq('id', id).single()
 
   if (error || !project) {
     redirect('/admin/projects')
   }
 
-  const updateProjectWithId = updateProject.bind(null, params.id)
+  const updateProjectWithId = updateProject.bind(null, id)
 
   return (
     <div className="space-y-6 max-w-2xl mx-auto">
