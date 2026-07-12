@@ -54,12 +54,12 @@ export function Navbar() {
           <ul className="flex items-center gap-6">
             {navLinks.map((link) => (
               <li key={link.name}>
-                <Link
+                <a
                   href={link.href}
                   className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors interactive"
                 >
                   {link.name}
-                </Link>
+                </a>
               </li>
             ))}
           </ul>
@@ -94,13 +94,13 @@ export function Navbar() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.1 }}
                 >
-                  <Link
+                  <a
                     href={link.href}
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="text-2xl font-semibold hover:text-primary transition-colors"
                   >
                     {link.name}
-                  </Link>
+                  </a>
                 </motion.div>
               ))}
             </div>
