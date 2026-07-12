@@ -32,7 +32,7 @@ function ProjectItem({ project }: { project: Project }) {
       <td className="relative px-4 py-4 text-center font-medium text-slate-200 align-middle">
         {/* Absolute drag handle on the far left edge, invisible until hover */}
         <div 
-          className="absolute left-2 top-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing text-slate-600 hover:text-slate-300 p-2 opacity-0 group-hover:opacity-100 transition-opacity"
+          className="absolute left-0 sm:left-2 top-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing text-slate-500 hover:text-slate-300 p-3 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity touch-none"
           onPointerDown={(e) => {
             e.preventDefault()
             controls.start(e)

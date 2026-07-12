@@ -84,10 +84,16 @@ export function IconSelector({ defaultType = 'lucide', defaultValue = '' }: { de
               required={!defaultValue || defaultType !== 'upload'}
             />
             <Input type="hidden" name="icon_value" value={defaultValue} />
-            {defaultType === 'upload' && defaultValue && (
-              <p className="text-xs text-muted-foreground">Leave blank to keep current uploaded image.</p>
+            {defaultType === 'upload' && defaultValue ? (
+              <div className="flex flex-col gap-1 pt-1">
+                <span className="text-sm font-medium text-emerald-400 break-all border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 rounded-md inline-block w-fit">
+                  ✓ Current: {decodeURIComponent(defaultValue.split('/').pop()?.replace(/_\d{13}(\.[^.]+)$/, '$1') || '')}
+                </span>
+                <p className="text-xs text-muted-foreground">Choose a new file to replace it, or leave blank to keep it.</p>
+              </div>
+            ) : (
+              <p className="text-xs text-muted-foreground">Upload a square image (SVG, PNG, JPG)</p>
             )}
-            <p className="text-xs text-muted-foreground">Upload a square image (SVG, PNG, JPG)</p>
           </div>
         )}
       </div>

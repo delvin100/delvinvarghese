@@ -86,7 +86,8 @@ async function handleIconUpload(formData: FormData) {
 
   const supabase = await createClient()
   const fileExt = file.name.split('.').pop()
-  const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`
+  const originalName = file.name.replace(`.${fileExt}`, '').replace(/[^a-zA-Z0-9_ -]/g, '')
+  const fileName = `${originalName}_${Date.now()}.${fileExt}`
 
   const { error } = await supabase.storage
     .from('portfolio_icons')
@@ -110,7 +111,8 @@ async function handleProjectImageUpload(formData: FormData) {
 
   const supabase = await createClient()
   const fileExt = file.name.split('.').pop()
-  const fileName = `projects/${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`
+  const originalName = file.name.replace(`.${fileExt}`, '').replace(/[^a-zA-Z0-9_ -]/g, '')
+  const fileName = `projects/${originalName}_${Date.now()}.${fileExt}`
 
   // Using portfolio_icons bucket to avoid needing to create a new public bucket
   const { error } = await supabase.storage

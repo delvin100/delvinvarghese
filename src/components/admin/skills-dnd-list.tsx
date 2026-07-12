@@ -73,7 +73,7 @@ function SkillItem({ skill }: { skill: Skill }) {
     >
       {/* Absolute drag handle on the far left edge, invisible until hover */}
       <div 
-        className="absolute left-2 top-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing text-slate-600 hover:text-slate-300 p-2 opacity-0 group-hover:opacity-100 transition-opacity"
+        className="absolute left-0 sm:left-2 top-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing text-slate-500 hover:text-slate-300 p-3 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity touch-none"
         onPointerDown={(e) => {
           e.preventDefault()
           controls.start(e)
@@ -182,7 +182,7 @@ function CategoryItem({
         <CardHeader className="border-b border-[#1e293b] pb-5 pt-5 px-6 flex flex-row items-center justify-between space-y-0">
           <div className="flex items-center gap-2">
             <div 
-              className="cursor-grab active:cursor-grabbing text-slate-700 hover:text-slate-400 p-1 transition-colors -ml-2"
+              className="cursor-grab active:cursor-grabbing text-slate-700 hover:text-slate-400 p-2 transition-colors -ml-2 touch-none"
               onPointerDown={(e) => {
                 e.preventDefault()
                 controls.start(e)
