@@ -20,6 +20,10 @@ export function ToastNotifier() {
         toast.success("Category added successfully")
       } else if (success === "category_updated") {
         toast.success("Category updated successfully")
+      } else if (success === "project_added") {
+        toast.success("Project added successfully")
+      } else if (success === "project_updated") {
+        toast.success("Project updated successfully")
       }
 
       // Remove the query param from the URL so it doesn't fire again on refresh

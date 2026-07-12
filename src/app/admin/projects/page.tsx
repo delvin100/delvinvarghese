@@ -5,14 +5,8 @@ import { Plus, Pencil, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import { deleteProject } from '@/app/actions/portfolio'
 import { GitHubSyncButton } from '@/components/admin/github-sync-button'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
+import { DeleteProjectButton } from '@/components/admin/delete-project-button'
+import { ProjectsDndList } from '@/components/admin/projects-dnd-list'
 
 export default async function AdminProjectsPage() {
   const supabase = await createClient()
@@ -28,17 +22,19 @@ export default async function AdminProjectsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Projects</h1>
-          <p className="text-muted-foreground mt-2">
+          <p className="text-muted-foreground mt-2 text-sm sm:text-base">
             Manage the projects displayed on your portfolio.
           </p>
         </div>
-        <div className="flex items-center gap-4">
-          <GitHubSyncButton />
-          <Link href="/admin/projects/new">
-            <Button>
+        <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
+          <div className="flex-1 sm:flex-none">
+            <GitHubSyncButton />
+          </div>
+          <Link href="/admin/projects/new" className="flex-1 sm:flex-none">
+            <Button className="w-full">
               <Plus className="mr-2 h-4 w-4" />
               Add Project
             </Button>
@@ -54,56 +50,7 @@ export default async function AdminProjectsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Title</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {projects.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={3} className="text-center py-6 text-muted-foreground">
-                    No projects found. Click "Add Project" to create one.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                projects.map((project) => (
-                  <TableRow key={project.id}>
-                    <TableCell className="font-medium">{project.title}</TableCell>
-                    <TableCell>
-                      {project.is_published ? (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
-                          Published
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300">
-                          Draft
-                        </span>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Link href={`/admin/projects/${project.id}`} className={buttonVariants({ variant: "ghost", size: "icon", className: "h-8 w-8" })}>
-                        <Pencil className="h-4 w-4 text-blue-500" />
-                        <span className="sr-only">Edit</span>
-                      </Link>
-                      <form action={async () => {
-                        'use server'
-                        await deleteProject(project.id)
-                      }} className="inline-block">
-                        <Button type="submit" variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:text-red-700">
-                          <Trash2 className="h-4 w-4" />
-                          <span className="sr-only">Delete</span>
-                        </Button>
-                      </form>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+          <ProjectsDndList initialProjects={projects} />
         </CardContent>
       </Card>
     </div>

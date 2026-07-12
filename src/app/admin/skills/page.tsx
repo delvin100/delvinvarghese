@@ -33,24 +33,24 @@ export default async function AdminSkillsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Skills</h1>
-          <p className="text-muted-foreground mt-2">
+          <p className="text-muted-foreground mt-2 text-sm sm:text-base">
             Manage the skills displayed on your portfolio.
           </p>
         </div>
-        <div className="flex gap-3">
-          <Link href="/admin/categories/new">
-            <Button variant="outline">
+        <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
+          <Link href="/admin/categories/new" className="flex-1 sm:flex-none">
+            <Button variant="outline" className="w-full">
               <Plus className="mr-2 h-4 w-4" />
-              Add Category
+              Category
             </Button>
           </Link>
-          <Link href="/admin/skills/new">
-            <Button>
+          <Link href="/admin/skills/new" className="flex-1 sm:flex-none">
+            <Button className="w-full">
               <Plus className="mr-2 h-4 w-4" />
-              Add Skill
+              Skill
             </Button>
           </Link>
         </div>

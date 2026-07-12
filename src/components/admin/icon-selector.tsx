@@ -19,7 +19,7 @@ export function IconSelector({ defaultType = 'lucide', defaultValue = '' }: { de
       </Label>
       
       <RadioGroup 
-        defaultValue={defaultType} 
+        value={iconType} 
         name="icon_type"
         onValueChange={setIconType} 
         className="flex gap-4"

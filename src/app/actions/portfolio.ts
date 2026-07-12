@@ -16,7 +16,7 @@ export async function createProject(formData: FormData) {
   const data = {
     title: formData.get('title') as string,
     description: formData.get('description') as string,
-    image_url: formData.get('image_url') as string,
+    image_url: await handleProjectImageUpload(formData),
     live_url: formData.get('live_url') as string,
     github_url: formData.get('github_url') as string,
     is_published: formData.get('is_published') === 'on',
@@ -29,7 +29,7 @@ export async function createProject(formData: FormData) {
   if (error) throw new Error(error.message)
   
   revalidatePath('/', 'layout')
-  redirect('/admin/projects')
+  redirect('/admin/projects?success=project_added')
 }
 
 export async function updateProject(id: string, formData: FormData) {
@@ -41,7 +41,7 @@ export async function updateProject(id: string, formData: FormData) {
   const data = {
     title: formData.get('title') as string,
     description: formData.get('description') as string,
-    image_url: formData.get('image_url') as string,
+    image_url: await handleProjectImageUpload(formData),
     live_url: formData.get('live_url') as string,
     github_url: formData.get('github_url') as string,
     is_published: formData.get('is_published') === 'on',
@@ -54,12 +54,23 @@ export async function updateProject(id: string, formData: FormData) {
   if (error) throw new Error(error.message)
   
   revalidatePath('/', 'layout')
-  redirect('/admin/projects')
+  redirect('/admin/projects?success=project_updated')
 }
 
 export async function deleteProject(id: string) {
   const supabase = await createClient()
   const { error } = await supabase.from('projects').delete().eq('id', id)
+  if (error) throw new Error(error.message)
+  revalidatePath('/', 'layout')
+}
+
+export async function updateProjectsOrder(updates: { id: string, order_index: number }[]) {
+  const supabase = await createClient()
+  const promises = updates.map(update => 
+    supabase.from('projects').update({ order_index: update.order_index }).eq('id', update.id)
+  )
+  const results = await Promise.all(promises)
+  const error = results.find(r => r.error)?.error
   if (error) throw new Error(error.message)
   revalidatePath('/', 'layout')
 }
@@ -77,6 +88,31 @@ async function handleIconUpload(formData: FormData) {
   const fileExt = file.name.split('.').pop()
   const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`
 
+  const { error } = await supabase.storage
+    .from('portfolio_icons')
+    .upload(fileName, file)
+
+  if (error) throw new Error(`Upload failed: ${error.message}`)
+  
+  const { data: { publicUrl } } = supabase.storage
+    .from('portfolio_icons')
+    .getPublicUrl(fileName)
+
+  return publicUrl
+}
+
+async function handleProjectImageUpload(formData: FormData) {
+  const imageType = formData.get('image_type') as string
+  if (imageType !== 'upload') return formData.get('image_url') as string
+
+  const file = formData.get('image_file') as File
+  if (!file || file.size === 0) return formData.get('image_url') as string
+
+  const supabase = await createClient()
+  const fileExt = file.name.split('.').pop()
+  const fileName = `projects/${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`
+
+  // Using portfolio_icons bucket to avoid needing to create a new public bucket
   const { error } = await supabase.storage
     .from('portfolio_icons')
     .upload(fileName, file)

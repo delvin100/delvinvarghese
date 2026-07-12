@@ -91,7 +91,7 @@ export function HeroSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
           
           {/* Left Column: Content */}
-          <div className="flex flex-col items-center lg:items-start text-center lg:text-left order-2 lg:order-1">
+          <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
             
             {/* Status Pill */}
             <motion.div
@@ -156,7 +156,7 @@ export function HeroSection() {
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.2, type: "spring" }}
-            className="relative mx-auto w-full lg:max-w-xl order-1 lg:order-2 mb-10 lg:mb-0"
+            className="relative mx-auto w-full lg:max-w-xl mb-10 lg:mb-0"
           >
             {/* Background glow behind editor */}
             <div className="absolute -inset-2 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-[24px] blur-xl opacity-20 group-hover:opacity-40 transition duration-1000" />
@@ -231,7 +231,7 @@ export function HeroSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1, duration: 1 }}
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        className="hidden md:flex absolute bottom-6 left-1/2 -translate-x-1/2 flex-col items-center gap-2"
       >
         <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">Scroll to discover</span>
         <div className="w-[1px] h-8 bg-border relative overflow-hidden">

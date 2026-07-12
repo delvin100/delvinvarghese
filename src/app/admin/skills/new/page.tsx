@@ -17,13 +17,13 @@ export default async function NewSkillPage() {
       {/* Background Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-primary/10 blur-[100px] rounded-full pointer-events-none -z-10" />
 
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-4xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">Add New Skill</h1>
-          <p className="text-muted-foreground mt-2">Expand your portfolio's technology stack.</p>
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">Add New Skill</h1>
+          <p className="text-muted-foreground mt-2 text-sm sm:text-base">Expand your portfolio's technology stack.</p>
         </div>
-        <Link href="/admin/skills">
-          <Button variant="outline" className="border-white/10 hover:bg-white/5">Cancel</Button>
+        <Link href="/admin/skills" className="w-full sm:w-auto">
+          <Button variant="outline" className="w-full border-white/10 hover:bg-white/5">Cancel</Button>
         </Link>
       </div>
 
