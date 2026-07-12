@@ -48,11 +48,11 @@ export default function RootLayout({
             <ScrollToTop />
           </div>
           <Toaster 
-            position="top-center" 
+            position="bottom-right" 
             theme="dark" 
             richColors 
             toastOptions={{
-              style: { width: 'max-content', minWidth: 'max-content' }
+              style: { width: 'max-content' }
             }}
           />
           <Suspense fallback={null}>

@@ -8,14 +8,28 @@ import { SkillsDndList } from '@/components/admin/skills-dnd-list'
 export default async function AdminSkillsPage() {
   const supabase = await createClient()
 
-  const { data: skills, error } = await supabase
+  const { data: rawSkills, error: skillsError } = await supabase
     .from('skills')
     .select('*')
     .order('order_index', { ascending: true })
 
-  if (error) {
-    return <div>Error loading skills: {error.message}</div>
+  const { data: categories, error: catError } = await supabase
+    .from('skill_categories')
+    .select('*')
+    .order('order_index', { ascending: true })
+
+  if (skillsError || catError) {
+    return <div>Error loading data: {skillsError?.message || catError?.message}</div>
   }
+
+  // Map category data into skills so the DnD list works
+  const skills = rawSkills.map(skill => {
+    const category = categories?.find(c => c.id === skill.category_id)
+    return {
+      ...skill,
+      category_name: category?.name || 'Uncategorized',
+    }
+  })
 
   return (
     <div className="space-y-6">
@@ -26,12 +40,20 @@ export default async function AdminSkillsPage() {
             Manage the skills displayed on your portfolio.
           </p>
         </div>
-        <Link href="/admin/skills/new">
-          <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            Add Skill
-          </Button>
-        </Link>
+        <div className="flex gap-3">
+          <Link href="/admin/categories/new">
+            <Button variant="outline">
+              <Plus className="mr-2 h-4 w-4" />
+              Add Category
+            </Button>
+          </Link>
+          <Link href="/admin/skills/new">
+            <Button>
+              <Plus className="mr-2 h-4 w-4" />
+              Add Skill
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {skills.length === 0 ? (
@@ -43,7 +65,7 @@ export default async function AdminSkillsPage() {
           </CardContent>
         </Card>
       ) : (
-        <SkillsDndList initialSkills={skills} />
+        <SkillsDndList initialSkills={skills} categories={categories || []} />
       )}
     </div>
   )

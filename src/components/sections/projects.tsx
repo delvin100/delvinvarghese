@@ -22,6 +22,7 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
       <div className="container mx-auto px-6 md:px-12">
         <SectionHeader 
           title="Featured Projects" 
+          centered
           subtitle={
             <span 
               className="inline-block mt-4 text-xl md:text-2xl text-blue-400/90 -rotate-2 drop-shadow-md tracking-wide"
@@ -34,86 +35,105 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
         
         <div className="flex flex-col gap-10 mt-20 pb-32">
           {projects.map((project, index) => {
+            const isEven = index % 2 === 0;
             const topOffset = 100 + index * 40;
             
             return (
               <motion.div
                 key={project.id}
-                initial={{ opacity: 0, y: 100 }}
+                initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="sticky w-full bg-[#050505] border border-white/10 rounded-[2.5rem] overflow-hidden shadow-2xl"
+                transition={{ duration: 0.7, ease: "easeOut" }}
+                className="relative group sticky w-full bg-[#050505] border border-white/10 rounded-[2.5rem] p-6 lg:p-12 overflow-hidden shadow-2xl"
                 style={{ top: `${topOffset}px` }}
               >
-                 <div className="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-white/10 min-h-[550px]">
+                {/* Background Glow Orb inside the solid card */}
+                <div className={`absolute top-1/2 -translate-y-1/2 w-full max-w-lg h-[400px] bg-primary/20 blur-[120px] rounded-full pointer-events-none transition-opacity duration-700 opacity-20 group-hover:opacity-50 ${isEven ? 'right-0' : 'left-0'}`} />
+
+                <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center z-10">
+                  
+                  {/* Content Container */}
+                  <div className={`flex flex-col justify-center order-2 ${isEven ? 'lg:order-1' : 'lg:order-2'} relative`}>
                     
-                    {/* Column 1: Meta (Number & Tags) - 3 cols */}
-                    <div className="col-span-1 lg:col-span-3 p-10 lg:p-12 flex flex-col bg-white/[0.02]">
-                       <span className="text-8xl lg:text-[10rem] font-black text-transparent [-webkit-text-stroke:2px_rgba(255,255,255,0.1)] group-hover:[-webkit-text-stroke:2px_rgba(var(--primary),0.5)] transition-all duration-700 mb-auto tracking-tighter leading-none select-none">
-                         0{index+1}
-                       </span>
-                       <div className="flex flex-col gap-4 mt-12">
-                          <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">Tech Stack</span>
-                          <div className="flex flex-wrap gap-2.5">
-                            {project.tags?.map(t => (
-                              <span key={t} className="text-xs font-mono text-slate-400 border border-white/10 px-3 py-1.5 rounded-full hover:border-white/30 transition-colors select-none">
-                                {t}
-                              </span>
-                            ))}
+                    {/* Big Background Number */}
+                    <div className={`absolute ${isEven ? '-top-24 lg:-top-32' : '-top-12 lg:-top-20'} ${isEven ? '-left-4 lg:-left-8' : '-right-4 lg:-right-8'} text-[6rem] lg:text-[8rem] font-black text-white/[0.04] select-none pointer-events-none -z-10 leading-none tracking-tighter`}>
+                      0{index + 1}
+                    </div>
+
+                    <h3 className="text-4xl lg:text-5xl font-bold text-white mb-6 tracking-tight bg-clip-text group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-primary/70 transition-all duration-500">
+                      {project.title}
+                    </h3>
+                    
+                    <p className="text-slate-400 text-lg leading-relaxed mb-8 font-light max-w-xl">
+                      {project.description}
+                    </p>
+                    
+                    <div className="flex flex-wrap gap-2.5 mb-10">
+                      {project.tags?.map(t => (
+                        <span key={t} className="text-xs font-mono text-primary/80 bg-primary/10 border border-primary/20 px-3 py-1.5 rounded-full shadow-[0_0_10px_rgba(var(--primary),0.1)] select-none">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                    
+                    <div className="flex items-center gap-6">
+                      {project.live_url && (
+                        <a 
+                          href={project.live_url} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="flex items-center gap-3 px-6 py-3 rounded-full bg-white text-black font-semibold hover:scale-105 hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] transition-all duration-300"
+                        >
+                          Visit Live
+                          <ArrowUpRight size={18} strokeWidth={2.5} />
+                        </a>
+                      )}
+                      {project.github_url && (
+                        <a 
+                          href={project.github_url} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="flex items-center justify-center w-12 h-12 rounded-full border border-white/20 text-slate-300 hover:text-white hover:border-white hover:bg-white/5 hover:scale-110 transition-all duration-300" 
+                          aria-label="Source Code"
+                        >
+                          <FaGithub size={22} />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {/* Image Container (Browser Window) */}
+                  <div className={`order-1 ${isEven ? 'lg:order-2' : 'lg:order-1'}`}>
+                    <div className="relative rounded-2xl p-[1px] bg-gradient-to-b from-white/20 to-white/5 shadow-2xl group-hover:-translate-y-2 group-hover:rotate-1 transition-transform duration-700 ease-out">
+                      
+                      <div className="rounded-2xl bg-[#0a0a0a] overflow-hidden">
+                        {/* Browser Header */}
+                        <div className="flex items-center px-4 py-3 bg-[#111] border-b border-white/5">
+                          <div className="flex gap-2">
+                            <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                            <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                            <div className="w-3 h-3 rounded-full bg-green-500/80" />
                           </div>
-                       </div>
+                        </div>
+                        
+                        {/* Browser Content (Image) */}
+                        <div className="relative aspect-[16/10] w-full overflow-hidden">
+                          <Image 
+                            src={project.image_url || "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000&auto=format&fit=crop"} 
+                            alt={project.title}
+                            fill 
+                            sizes="(max-width: 1024px) 100vw, 50vw"
+                            className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out" 
+                          />
+                          <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500" />
+                        </div>
+                      </div>
+                      
                     </div>
-                    
-                    {/* Column 2: Main Content - 5 cols */}
-                    <div className="col-span-1 lg:col-span-5 p-10 lg:p-12 flex flex-col justify-center relative overflow-hidden">
-                       {/* Background abstract element */}
-                       <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -z-10 group-hover:bg-primary/20 transition-colors duration-700" />
-                       
-                       <h3 className="text-4xl lg:text-5xl font-black text-white mb-6 tracking-tighter leading-tight relative z-10 group-hover:text-primary transition-colors duration-500">
-                         {project.title}
-                       </h3>
-                       <p className="text-slate-400 text-lg leading-relaxed mb-14 relative z-10 font-light">
-                         {project.description}
-                       </p>
-                       
-                       <div className="flex items-center gap-8 mt-auto relative z-10">
-                          <a 
-                            href={project.live_url || "#"} 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            className="group/btn flex items-center gap-4 text-white font-bold hover:text-white transition-colors uppercase tracking-widest text-sm"
-                          >
-                             <div className="w-14 h-14 rounded-full border border-white/20 flex items-center justify-center group-hover/btn:border-white group-hover/btn:bg-white group-hover/btn:text-black transition-all duration-500">
-                                <ArrowUpRight size={20} strokeWidth={2} className="transition-transform duration-500 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1" />
-                             </div>
-                             Live Project
-                          </a>
-                          <a 
-                            href={project.github_url || "#"} 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            className="text-slate-600 hover:text-white transition-colors" 
-                            aria-label="Source Code"
-                          >
-                             <FaGithub size={28} />
-                          </a>
-                       </div>
-                    </div>
-                    
-                    {/* Column 3: Image - 4 cols */}
-                    <div className="col-span-1 lg:col-span-4 relative min-h-[400px] lg:min-h-full bg-slate-900 group/img overflow-hidden">
-                       <Image 
-                         src={project.image_url || "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000&auto=format&fit=crop"} 
-                         alt={project.title}
-                         fill 
-                         sizes="(max-width: 1024px) 100vw, 33vw"
-                         className="object-cover grayscale group-hover/img:grayscale-0 group-hover/img:scale-110 transition-all duration-1000 ease-out" 
-                       />
-                       <div className="absolute inset-0 bg-primary/20 mix-blend-overlay opacity-0 group-hover/img:opacity-100 transition-opacity duration-1000" />
-                       <div className="absolute inset-0 shadow-[inset_0_0_40px_rgba(0,0,0,0.8)] pointer-events-none" />
-                    </div>
-                 </div>
+                  </div>
+
+                </div>
               </motion.div>
             );
           })}

@@ -121,7 +121,7 @@ export function HeroSection() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="text-xl md:text-2xl text-slate-400 max-w-xl mb-10 leading-relaxed font-light"
             >
-              A <span className="inline-block px-3 py-0.5 mx-1 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border border-blue-500/20 rounded-lg text-blue-200 font-medium text-lg md:text-xl shadow-sm backdrop-blur-sm">full-stack</span> website developer with a passion for crafting <span className="font-serif italic text-white tracking-wide text-2xl md:text-3xl px-1">unique</span> digital experiences.
+              A <span className="inline-block px-3 py-0.5 mx-1 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border border-blue-500/20 rounded-lg text-blue-200 font-medium text-lg md:text-xl shadow-sm backdrop-blur-sm">Full-stack</span> developer passionate about building elegant, scalable, and user-centric digital experiences.
             </motion.p>
             
             {/* Buttons */}
@@ -202,7 +202,9 @@ export function HeroSection() {
                     <br/>
                     {'  '}role: <span className="text-yellow-300">'Full Stack Engineer'</span>,
                     <br/>
-                    {'  '}skills: [<span className="text-yellow-300">'React'</span>, <span className="text-yellow-300">'Next.js'</span>, <span className="text-yellow-300">'Node'</span>, <span className="text-yellow-300">'SQL'</span>],
+                    {'  '}style: <span className="text-yellow-300">'Vibe Coder'</span>,
+                    <br/>
+                    {'  '}skills: [<span className="text-yellow-300">'Next.js'</span>, <span className="text-yellow-300">'TypeScript'</span>, <span className="text-yellow-300">'Node.js'</span>, <span className="text-yellow-300">'Supabase'</span>],
                     <br/>
                     {'  '}passion: <span className="text-yellow-300">'Building scalable systems'</span>,
                     <br/>

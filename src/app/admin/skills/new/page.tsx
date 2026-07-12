@@ -4,19 +4,14 @@ import { SubmitButton } from '@/components/admin/submit-button'
 import { Input } from '@/components/ui/input'
 import { createSkill } from '@/app/actions/portfolio'
 import Link from 'next/link'
-import { Type, FolderTree, Image as ImageIcon, Sparkles } from 'lucide-react'
+import { Type, FolderTree, Sparkles } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
-import { AutoFillScript } from '@/components/admin/auto-fill-script'
+import { IconSelector } from '@/components/admin/icon-selector'
 
 export default async function NewSkillPage() {
   const supabase = await createClient()
-  const { data: skills } = await supabase.from('skills').select('category, icon')
+  const { data: categories } = await supabase.from('skill_categories').select('id, name')
   
-  const categories = Array.from(new Set(skills?.map(s => s.category) || []))
-  const categoryIconMap = (skills || []).reduce((acc, skill) => {
-    if (skill.category && skill.icon && !acc[skill.category]) acc[skill.category] = skill.icon
-    return acc
-  }, {} as Record<string, string>)
   return (
     <div className="space-y-8 max-w-2xl mx-auto relative mt-10">
       {/* Background Glow */}
@@ -52,35 +47,29 @@ export default async function NewSkillPage() {
             </div>
 
             <div className="space-y-3">
-              <label htmlFor="category" className="text-sm font-medium flex items-center gap-2 text-foreground/80">
+              <label htmlFor="category_id" className="text-sm font-medium flex items-center gap-2 text-foreground/80">
                 <FolderTree className="h-4 w-4 text-emerald-400" />
                 Category
               </label>
-              <Input id="category" name="category" required placeholder="e.g. Frontend, Backend, Tools" list="category-options" className="bg-background/50 border-white/10 focus-visible:ring-emerald-500/50 transition-all h-12 text-lg" />
-              <datalist id="category-options">
-                {categories.map((cat) => (
-                  <option key={cat} value={cat} />
+              <select 
+                id="category_id" 
+                name="category_id" 
+                required 
+                className="flex h-12 w-full rounded-md bg-background/50 border border-white/10 px-3 py-2 text-lg ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
+              >
+                <option value="">Select a category...</option>
+                {categories?.map((cat) => (
+                  <option key={cat.id} value={cat.id}>{cat.name}</option>
                 ))}
-              </datalist>
+              </select>
             </div>
 
-            <div className="space-y-3">
-              <label htmlFor="icon" className="text-sm font-medium flex items-center gap-2 text-foreground/80">
-                <ImageIcon className="h-4 w-4 text-purple-400" />
-                Icon Name (Lucide)
-              </label>
-              <Input id="icon" name="icon" required placeholder="e.g. Terminal" className="bg-background/50 border-white/10 focus-visible:ring-purple-500/50 transition-all h-12 text-lg" />
-              <p className="text-sm text-muted-foreground pt-1 flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-purple-500 inline-block" />
-                Suggested: Database, Terminal, Layout, Code2, Cpu, Server
-              </p>
-            </div>
+            <IconSelector />
 
             <div className="pt-6 flex justify-end">
               <SubmitButton label="Launch Skill" />
             </div>
           </form>
-          <AutoFillScript categoryIconMap={categoryIconMap} />
         </CardContent>
       </Card>
     </div>

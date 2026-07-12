@@ -7,7 +7,8 @@ import { Button, buttonVariants } from "@/components/ui/button"
 import { Save, GripVertical, Pencil, Trash2 } from "lucide-react"
 import Link from "next/link"
 import * as Icons from "lucide-react"
-import { updateSkillsOrder, deleteSkill } from "@/app/actions/portfolio"
+import { IconRenderer } from "@/components/ui/icon-renderer"
+import { updateSkillsOrder, deleteSkill, updateCategoriesOrder, deleteCategory } from "@/app/actions/portfolio"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import {
@@ -24,21 +25,28 @@ import {
 type Skill = {
   id: string
   name: string
-  category: string
+  category_id: string
+  category_name: string
+  icon_type: string
   icon: string
   order_index: number
 }
 
-type CategoryGroup = {
-  id: string // Using category name as ID
+type RawCategory = {
+  id: string
   name: string
+  icon_type: string
+  icon: string
+  order_index: number
+}
+
+type CategoryGroup = RawCategory & {
   skills: Skill[]
 }
 
 // Separate component for SkillItem
 function SkillItem({ skill }: { skill: Skill }) {
   const controls = useDragControls()
-  const IconComponent = skill.icon ? (Icons as any)[skill.icon] : null
   const [isOpen, setIsOpen] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
 
@@ -81,8 +89,8 @@ function SkillItem({ skill }: { skill: Skill }) {
 
       {/* Icon */}
       <div className="flex items-center justify-center gap-4 text-slate-300">
-        {IconComponent && <IconComponent className="h-4 w-4 text-slate-400" />}
-        <span className="text-sm font-mono tracking-wide">{skill.icon || 'None'}</span>
+        <IconRenderer iconType={skill.icon_type} iconValue={skill.icon} className="h-4 w-4 text-slate-400" />
+        <span className="text-sm font-mono tracking-wide truncate max-w-[100px]">{skill.icon || 'None'}</span>
       </div>
 
       {/* Actions */}
@@ -106,7 +114,7 @@ function SkillItem({ skill }: { skill: Skill }) {
                 Are you sure you want to delete <strong className="text-white font-semibold">{skill.name}</strong>? This action cannot be undone.
               </DialogDescription>
             </DialogHeader>
-            <DialogFooter className="sm:justify-end gap-3 pt-6 border-t border-[#1e293b]/50 mt-2">
+            <DialogFooter className="sm:justify-end gap-3 pt-6 border-t border-[#1e293b]/50 mt-2 bg-transparent">
               <Button
                 type="button"
                 variant="outline"
@@ -142,6 +150,24 @@ function CategoryItem({
   onSkillsReorder: (categoryId: string, newSkills: Skill[]) => void
 }) {
   const controls = useDragControls()
+  const [isOpen, setIsOpen] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  const handleDeleteCat = async () => {
+    setIsDeleting(true)
+    try {
+      await deleteCategory(category.id)
+      toast.success("Category deleted successfully")
+      setIsOpen(false)
+      // Note: We might need a page refresh or to lift this state up to fully remove it from UI without refresh, 
+      // but for now, we'll just reload the page as it's the simplest way to reflect the deletion globally.
+      window.location.reload()
+    } catch (error: any) {
+      toast.error("Failed to delete category")
+    } finally {
+      setIsDeleting(false)
+    }
+  }
 
   return (
     <Reorder.Item 
@@ -164,13 +190,62 @@ function CategoryItem({
             >
               <GripVertical className="h-5 w-5" />
             </div>
+            <IconRenderer iconType={category.icon_type} iconValue={category.icon} className="h-6 w-6 text-emerald-400 mr-2" />
             <CardTitle className="text-xl font-bold text-slate-100 tracking-tight">
               {category.name}
             </CardTitle>
           </div>
-          <span className="text-sm font-medium text-slate-400">
-            {category.skills.length} skill{category.skills.length !== 1 && 's'}
-          </span>
+          <div className="flex items-center gap-4">
+            <span className="text-sm font-medium text-slate-400">
+              {category.skills.length} skill{category.skills.length !== 1 && 's'}
+            </span>
+            
+            {category.id !== 'uncategorized' && (
+              <div className="flex items-center justify-center gap-3 ml-2">
+                <Link href={`/admin/categories/${category.id}`}>
+                  <Pencil className="h-4 w-4 text-blue-500 hover:text-blue-400 transition-colors cursor-pointer" />
+                </Link>
+                <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                  <DialogTrigger className="cursor-pointer">
+                    <Trash2 className="h-4 w-4 text-red-500 hover:text-red-400 transition-colors cursor-pointer" />
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md bg-[#0b1120] border-[#1e293b] shadow-2xl p-6">
+                    <DialogHeader className="gap-3">
+                      <DialogTitle className="text-xl flex items-center gap-2 text-slate-100">
+                        <div className="p-2 bg-red-500/10 rounded-full">
+                          <Trash2 className="h-5 w-5 text-red-500" />
+                        </div>
+                        Delete Category
+                      </DialogTitle>
+                      <DialogDescription className="text-slate-400 text-base leading-relaxed pt-2">
+                        Are you sure you want to delete <strong className="text-white font-semibold">{category.name}</strong>? This action cannot be undone. Any skills within this category will become Uncategorized.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="sm:justify-end gap-3 pt-6 border-t border-[#1e293b]/50 mt-2 bg-transparent">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="border-white/10 bg-transparent text-slate-300 hover:bg-white/5 hover:text-white"
+                        onClick={() => setIsOpen(false)}
+                        disabled={isDeleting}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        className="bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white shadow-lg hover:shadow-red-500/25 transition-all"
+                        onClick={handleDeleteCat}
+                        disabled={isDeleting}
+                      >
+                        {isDeleting ? "Deleting..." : "Delete"}
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            )}
+          </div>
         </CardHeader>
         
         <CardContent className="p-0">
@@ -202,27 +277,40 @@ function CategoryItem({
   )
 }
 
-export function SkillsDndList({ initialSkills }: { initialSkills: Skill[] }) {
+export function SkillsDndList({ initialSkills, categories: initialCategories }: { initialSkills: Skill[], categories: RawCategory[] }) {
   const [categories, setCategories] = useState<CategoryGroup[]>([])
   const [isSaving, setIsSaving] = useState(false)
   const router = useRouter()
 
   // Initialize the grouped categories
   useEffect(() => {
-    // Group skills by category based on their initial order_index sorted state
-    const skillsByCategory = (initialSkills || []).reduce((acc, skill) => {
-      const catName = skill.category || 'Uncategorized'
-      if (!acc[catName]) {
-        acc[catName] = { id: catName, name: catName, skills: [] }
+    // Map initial categories to CategoryGroup
+    const catMap = new Map<string, CategoryGroup>()
+    
+    // Sort initial categories by order_index
+    const sortedCats = [...(initialCategories || [])].sort((a, b) => (a.order_index || 0) - (b.order_index || 0))
+    
+    sortedCats.forEach(cat => {
+      catMap.set(cat.id, { ...cat, skills: [] })
+    })
+    
+    // Assign skills to their categories
+    ;(initialSkills || []).forEach(skill => {
+      if (skill.category_id && catMap.has(skill.category_id)) {
+        catMap.get(skill.category_id)!.skills.push(skill)
+      } else {
+        // Fallback for skills without a valid category
+        let uncategorized = catMap.get('uncategorized')
+        if (!uncategorized) {
+          uncategorized = { id: 'uncategorized', name: 'Uncategorized', icon_type: 'lucide', icon: 'HelpCircle', order_index: 999, skills: [] }
+          catMap.set('uncategorized', uncategorized)
+        }
+        uncategorized.skills.push(skill)
       }
-      acc[catName].skills.push(skill)
-      return acc
-    }, {} as Record<string, CategoryGroup>)
+    })
 
-    // Maintain the order of categories as they appear in the sorted initialSkills
-    const orderedCategories = Object.values(skillsByCategory)
-    setCategories(orderedCategories)
-  }, [initialSkills])
+    setCategories(Array.from(catMap.values()))
+  }, [initialSkills, initialCategories])
 
   // Handle reordering skills within a specific category
   const handleSkillsReorder = (categoryId: string, newSkills: Skill[]) => {
@@ -236,13 +324,28 @@ export function SkillsDndList({ initialSkills }: { initialSkills: Skill[] }) {
     setIsSaving(true)
     
     try {
-      // Flatten the visual layout into a 1-to-N list of updates
-      const updates: { id: string, order_index: number }[] = []
+      // 1. Save Category Order
+      const categoryUpdates: { id: string, order_index: number }[] = []
+      categories.forEach((cat, index) => {
+        if (cat.id !== 'uncategorized') {
+          categoryUpdates.push({
+            id: cat.id,
+            order_index: index + 1
+          })
+        }
+      })
+
+      if (categoryUpdates.length > 0) {
+        await updateCategoriesOrder(categoryUpdates)
+      }
+
+      // 2. Save Skills Order
+      const skillUpdates: { id: string, order_index: number }[] = []
       let globalIndex = 1
       
       categories.forEach(category => {
         category.skills.forEach(skill => {
-          updates.push({
+          skillUpdates.push({
             id: skill.id,
             order_index: globalIndex
           })
@@ -251,7 +354,7 @@ export function SkillsDndList({ initialSkills }: { initialSkills: Skill[] }) {
       })
 
       // Send updates to the server action
-      await updateSkillsOrder(updates)
+      await updateSkillsOrder(skillUpdates)
       
       toast.success("Layout Order Saved!")
       

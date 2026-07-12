@@ -64,6 +64,84 @@ export async function deleteProject(id: string) {
   revalidatePath('/', 'layout')
 }
 
+// --- UTILS ---
+
+async function handleIconUpload(formData: FormData) {
+  const iconType = formData.get('icon_type') as string
+  if (iconType !== 'upload') return formData.get('icon_value') as string
+
+  const file = formData.get('icon_file') as File
+  if (!file || file.size === 0) return formData.get('icon_value') as string
+
+  const supabase = await createClient()
+  const fileExt = file.name.split('.').pop()
+  const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`
+
+  const { error } = await supabase.storage
+    .from('portfolio_icons')
+    .upload(fileName, file)
+
+  if (error) throw new Error(`Upload failed: ${error.message}`)
+  
+  const { data: { publicUrl } } = supabase.storage
+    .from('portfolio_icons')
+    .getPublicUrl(fileName)
+
+  return publicUrl
+}
+
+// --- CATEGORIES ---
+
+export async function createCategory(formData: FormData) {
+  const supabase = await createClient()
+  
+  const data = {
+    name: formData.get('name') as string,
+    icon_type: formData.get('icon_type') as string,
+    icon: await handleIconUpload(formData),
+  }
+
+  const { error } = await supabase.from('skill_categories').insert([data])
+  if (error) throw new Error(error.message)
+  
+  revalidatePath('/', 'layout')
+  redirect('/admin/skills?success=category_added')
+}
+
+export async function updateCategory(id: string, formData: FormData) {
+  const supabase = await createClient()
+  
+  const data = {
+    name: formData.get('name') as string,
+    icon_type: formData.get('icon_type') as string,
+    icon: await handleIconUpload(formData),
+  }
+
+  const { error } = await supabase.from('skill_categories').update(data).eq('id', id)
+  if (error) throw new Error(error.message)
+  
+  revalidatePath('/', 'layout')
+  redirect('/admin/skills?success=category_updated')
+}
+
+export async function deleteCategory(id: string) {
+  const supabase = await createClient()
+  const { error } = await supabase.from('skill_categories').delete().eq('id', id)
+  if (error) throw new Error(error.message)
+  revalidatePath('/', 'layout')
+}
+
+export async function updateCategoriesOrder(updates: { id: string, order_index: number }[]) {
+  const supabase = await createClient()
+  const promises = updates.map(update => 
+    supabase.from('skill_categories').update({ order_index: update.order_index }).eq('id', update.id)
+  )
+  const results = await Promise.all(promises)
+  const error = results.find(r => r.error)?.error
+  if (error) throw new Error(error.message)
+  revalidatePath('/', 'layout')
+}
+
 // --- SKILLS ---
 
 export async function createSkill(formData: FormData) {
@@ -71,8 +149,9 @@ export async function createSkill(formData: FormData) {
   
   const data = {
     name: formData.get('name') as string,
-    category: formData.get('category') as string,
-    icon: formData.get('icon') as string,
+    category_id: formData.get('category_id') as string,
+    icon_type: formData.get('icon_type') as string,
+    icon: await handleIconUpload(formData),
   }
 
   const { error } = await supabase.from('skills').insert([data])
@@ -87,8 +166,9 @@ export async function updateSkill(id: string, formData: FormData) {
   
   const data = {
     name: formData.get('name') as string,
-    category: formData.get('category') as string,
-    icon: formData.get('icon') as string,
+    category_id: formData.get('category_id') as string,
+    icon_type: formData.get('icon_type') as string,
+    icon: await handleIconUpload(formData),
   }
 
   const { error } = await supabase.from('skills').update(data).eq('id', id)

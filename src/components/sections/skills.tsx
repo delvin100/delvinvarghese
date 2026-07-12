@@ -3,48 +3,25 @@
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { SectionHeader } from "../ui/section-header"
-import { 
-  Code2, 
-  Database, 
-  Layout, 
-  Terminal,
-  type LucideIcon
-} from "lucide-react"
+import { IconRenderer } from "../ui/icon-renderer"
 import Image from "next/image"
 
 export interface SkillCategory {
-  id: string;
-  name: string;
-  category: string;
-  icon: string;
+  id: string
+  name: string
+  icon_type: string
+  icon: string
+  order_index: number
 }
 
-const iconMap: Record<string, LucideIcon> = {
-  Database,
-  Terminal,
-  Layout,
-  Code2,
+export interface Skill {
+  id: string
+  name: string
+  category_id: string
+  icon_type: string
+  icon: string
+  order_index: number
 }
-
-// Group flat skills from DB into categories
-function groupSkills(skills: SkillCategory[]) {
-  const groups: Record<string, { title: string, icon: LucideIcon, skills: string[] }> = {}
-  
-  skills.forEach(skill => {
-    if (!groups[skill.category]) {
-      groups[skill.category] = {
-        title: skill.category,
-        icon: iconMap[skill.icon] || Code2,
-        skills: []
-      }
-    }
-    groups[skill.category].skills.push(skill.name)
-  })
-  
-  return Object.values(groups)
-}
-
-
 
 const DinoAnimation = ({ posIndex, direction, columns }: { posIndex: number, direction: number, columns: number }) => {
   if (columns === 0) return null;
@@ -76,8 +53,17 @@ const DinoAnimation = ({ posIndex, direction, columns }: { posIndex: number, dir
   )
 }
 
-export function SkillsSection({ skills }: { skills: SkillCategory[] }) {
-  const skillCategories = groupSkills(skills)
+export function SkillsSection({ skills, categories }: { skills: Skill[], categories: SkillCategory[] }) {
+  // Sort categories and skills by order_index
+  const sortedCategories = [...(categories || [])].sort((a, b) => (a.order_index || 0) - (b.order_index || 0))
+  const sortedSkills = [...(skills || [])].sort((a, b) => (a.order_index || 0) - (b.order_index || 0))
+  
+  // Group skills by category_id
+  const skillCategories = sortedCategories.map(cat => ({
+    ...cat,
+    skills: sortedSkills.filter(s => s.category_id === cat.id)
+  }))
+
   const cardCount = skillCategories.length
   const columns = Math.min(cardCount, 4)
 
@@ -151,7 +137,7 @@ export function SkillsSection({ skills }: { skills: SkillCategory[] }) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {skillCategories.map((category, index) => (
             <motion.div
-              key={category.title}
+              key={category.id}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false, margin: "-50px" }}
@@ -180,22 +166,23 @@ export function SkillsSection({ skills }: { skills: SkillCategory[] }) {
                 
                 <div className="relative z-10 flex flex-col h-full">
                   <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mb-8 border border-primary/10 shadow-[0_0_15px_rgba(var(--primary),0.1)] group-hover:shadow-[0_0_25px_rgba(var(--primary),0.2)] transition-shadow">
-                    <category.icon size={28} className="text-primary" />
+                    <IconRenderer iconType={category.icon_type} iconValue={category.icon} className="w-7 h-7 text-primary" />
                   </div>
                   
-                  <h3 className="text-2xl font-bold mb-8 tracking-tight text-foreground/90 group-hover:text-foreground transition-colors">{category.title}</h3>
+                  <h3 className="text-2xl font-bold mb-8 tracking-tight text-foreground/90 group-hover:text-foreground transition-colors">{category.name}</h3>
                   
                   <div className="flex flex-wrap gap-2.5 mt-auto">
                     {category.skills.map((skill, i) => (
                       <motion.span
-                        key={skill}
+                        key={skill.id}
                         initial={{ opacity: 0, scale: 0.9 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: false }}
                         transition={{ delay: 0.3 + (i * 0.05) }}
-                        className="inline-flex items-center px-4 py-1.5 text-sm font-medium rounded-full bg-white/5 text-slate-300 border border-white/10 hover:bg-primary/20 hover:text-primary hover:border-primary/30 transition-all duration-300 shadow-sm hover:shadow-primary/20 cursor-default"
+                        className="inline-flex items-center gap-2 px-4 py-1.5 text-sm font-medium rounded-full bg-white/5 text-slate-300 border border-white/10 hover:bg-primary/20 hover:text-primary hover:border-primary/30 transition-all duration-300 shadow-sm hover:shadow-primary/20 cursor-default"
                       >
-                        {skill}
+                        <IconRenderer iconType={skill.icon_type} iconValue={skill.icon} className="w-3.5 h-3.5" />
+                        {skill.name}
                       </motion.span>
                     ))}
                   </div>

@@ -6,20 +6,14 @@ import { updateSkill } from '@/app/actions/portfolio'
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { Type, FolderTree, Image as ImageIcon, Sparkles } from 'lucide-react'
-import { AutoFillScript } from '@/components/admin/auto-fill-script'
+import { Type, FolderTree, Sparkles } from 'lucide-react'
+import { IconSelector } from '@/components/admin/icon-selector'
 
 export default async function EditSkillPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const supabase = await createClient()
   const { data: skill, error } = await supabase.from('skills').select('*').eq('id', id).single()
-
-  const { data: allSkills } = await supabase.from('skills').select('category, icon')
-  const categories = Array.from(new Set(allSkills?.map(s => s.category) || []))
-  const categoryIconMap = (allSkills || []).reduce((acc, skill) => {
-    if (skill.category && skill.icon && !acc[skill.category]) acc[skill.category] = skill.icon
-    return acc
-  }, {} as Record<string, string>)
+  const { data: categories } = await supabase.from('skill_categories').select('id, name')
 
   if (error || !skill) {
     redirect('/admin/skills')
@@ -62,35 +56,30 @@ export default async function EditSkillPage({ params }: { params: Promise<{ id: 
             </div>
 
             <div className="space-y-3">
-              <label htmlFor="category" className="text-sm font-medium flex items-center gap-2 text-foreground/80">
+              <label htmlFor="category_id" className="text-sm font-medium flex items-center gap-2 text-foreground/80">
                 <FolderTree className="h-4 w-4 text-emerald-400" />
                 Category
               </label>
-              <Input id="category" name="category" required defaultValue={skill.category} list="category-options" className="bg-background/50 border-white/10 focus-visible:ring-emerald-500/50 transition-all h-12 text-lg" />
-              <datalist id="category-options">
-                {categories.map((cat) => (
-                  <option key={cat} value={cat} />
+              <select 
+                id="category_id" 
+                name="category_id" 
+                required 
+                defaultValue={skill.category_id}
+                className="flex h-12 w-full rounded-md bg-background/50 border border-white/10 px-3 py-2 text-lg ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
+              >
+                <option value="">Select a category...</option>
+                {categories?.map((cat) => (
+                  <option key={cat.id} value={cat.id}>{cat.name}</option>
                 ))}
-              </datalist>
+              </select>
             </div>
 
-            <div className="space-y-3">
-              <label htmlFor="icon" className="text-sm font-medium flex items-center gap-2 text-foreground/80">
-                <ImageIcon className="h-4 w-4 text-purple-400" />
-                Icon Name (Lucide)
-              </label>
-              <Input id="icon" name="icon" required defaultValue={skill.icon || ''} className="bg-background/50 border-white/10 focus-visible:ring-purple-500/50 transition-all h-12 text-lg" />
-              <p className="text-sm text-muted-foreground pt-1 flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-purple-500 inline-block" />
-                Suggested: Database, Terminal, Layout, Code2, Cpu, Server
-              </p>
-            </div>
+            <IconSelector defaultType={skill.icon_type} defaultValue={skill.icon} />
 
             <div className="pt-6 flex justify-end">
               <SubmitButton label="Save Changes" />
             </div>
           </form>
-          <AutoFillScript categoryIconMap={categoryIconMap} />
         </CardContent>
       </Card>
     </div>

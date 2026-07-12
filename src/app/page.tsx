@@ -17,10 +17,12 @@ export default async function Home() {
   const [
     { data: projects },
     { data: skills },
+    { data: categories },
     { data: experiences }
   ] = await Promise.all([
     supabase.from('projects').select('*').order('order_index', { ascending: true }),
     supabase.from('skills').select('*').order('order_index', { ascending: true }),
+    supabase.from('skill_categories').select('*').order('order_index', { ascending: true }),
     supabase.from('experience').select('*').order('start_date', { ascending: false, nullsFirst: false })
   ])
 
@@ -29,7 +31,7 @@ export default async function Home() {
       <Navbar />
       <HeroSection />
       <AboutSection />
-      <SkillsSection skills={skills || []} />
+      <SkillsSection skills={skills || []} categories={categories || []} />
       <ProjectsSection projects={(projects || []).filter(p => p.is_published)} />
       <ExperienceSection experiences={experiences || []} />
       <ContactSection />
