@@ -73,14 +73,13 @@ export async function createSkill(formData: FormData) {
     name: formData.get('name') as string,
     category: formData.get('category') as string,
     icon: formData.get('icon') as string,
-    order_index: Number(formData.get('order_index') || 0)
   }
 
   const { error } = await supabase.from('skills').insert([data])
   if (error) throw new Error(error.message)
   
   revalidatePath('/', 'layout')
-  redirect('/admin/skills')
+  redirect('/admin/skills?success=skill_added')
 }
 
 export async function updateSkill(id: string, formData: FormData) {
@@ -96,7 +95,7 @@ export async function updateSkill(id: string, formData: FormData) {
   if (error) throw new Error(error.message)
   
   revalidatePath('/', 'layout')
-  redirect('/admin/skills')
+  redirect('/admin/skills?success=skill_updated')
 }
 
 export async function deleteSkill(id: string) {

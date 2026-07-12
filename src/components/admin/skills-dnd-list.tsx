@@ -10,6 +10,16 @@ import * as Icons from "lucide-react"
 import { updateSkillsOrder, deleteSkill } from "@/app/actions/portfolio"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from "@/components/ui/dialog"
 
 type Skill = {
   id: string
@@ -29,6 +39,21 @@ type CategoryGroup = {
 function SkillItem({ skill }: { skill: Skill }) {
   const controls = useDragControls()
   const IconComponent = skill.icon ? (Icons as any)[skill.icon] : null
+  const [isOpen, setIsOpen] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  const handleDelete = async () => {
+    setIsDeleting(true)
+    try {
+      await deleteSkill(skill.id)
+      toast.success("Skill deleted successfully")
+      setIsOpen(false)
+    } catch (error: any) {
+      toast.error("Failed to delete skill")
+    } finally {
+      setIsDeleting(false)
+    }
+  }
 
   return (
     <Reorder.Item 
@@ -65,15 +90,39 @@ function SkillItem({ skill }: { skill: Skill }) {
         <Link href={`/admin/skills/${skill.id}`}>
           <Pencil className="h-4 w-4 text-blue-500 hover:text-blue-400 transition-colors cursor-pointer" />
         </Link>
-        <button 
-          onClick={async () => {
-            if (confirm("Are you sure you want to delete this skill?")) {
-              await deleteSkill(skill.id)
-            }
-          }}
-        >
-          <Trash2 className="h-4 w-4 text-red-500 hover:text-red-400 transition-colors cursor-pointer" />
-        </button>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <DialogTrigger className="cursor-pointer">
+            <Trash2 className="h-4 w-4 text-red-500 hover:text-red-400 transition-colors cursor-pointer" />
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-md bg-[#0b1120] border-[#1e293b]">
+            <DialogHeader>
+              <DialogTitle className="text-slate-100">Delete Skill</DialogTitle>
+              <DialogDescription className="text-slate-400">
+                Are you sure you want to delete <strong className="text-slate-200">{skill.name}</strong>? This action cannot be undone.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className="sm:justify-end gap-2 mt-4 bg-transparent border-t-0 p-0">
+              <Button
+                type="button"
+                variant="outline"
+                className="border-[#1e293b] text-slate-300 hover:bg-slate-800 hover:text-slate-100"
+                onClick={() => setIsOpen(false)}
+                disabled={isDeleting}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                variant="destructive"
+                className="bg-red-600 hover:bg-red-700 text-white"
+                onClick={handleDelete}
+                disabled={isDeleting}
+              >
+                {isDeleting ? "Deleting..." : "Delete"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </Reorder.Item>
   )
@@ -199,9 +248,7 @@ export function SkillsDndList({ initialSkills }: { initialSkills: Skill[] }) {
       // Send updates to the server action
       await updateSkillsOrder(updates)
       
-      toast.success("Layout Order Saved!", {
-        description: "Your live site will now perfectly match this layout.",
-      })
+      toast.success("Layout Order Saved!")
       
       router.refresh()
     } catch (error: any) {

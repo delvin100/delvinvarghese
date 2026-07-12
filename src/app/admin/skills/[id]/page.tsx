@@ -87,7 +87,7 @@ export default async function EditSkillPage({ params }: { params: Promise<{ id: 
             </div>
 
             <div className="pt-6 flex justify-end">
-              <SubmitButton label="Save Changes" successMessage="Skill updated successfully" />
+              <SubmitButton label="Save Changes" />
             </div>
           </form>
           <AutoFillScript categoryIconMap={categoryIconMap} />

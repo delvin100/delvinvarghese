@@ -77,7 +77,7 @@ export default async function NewSkillPage() {
             </div>
 
             <div className="pt-6 flex justify-end">
-              <SubmitButton label="Launch Skill" successMessage="Skill added successfully" />
+              <SubmitButton label="Launch Skill" />
             </div>
           </form>
           <AutoFillScript categoryIconMap={categoryIconMap} />
