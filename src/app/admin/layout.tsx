@@ -48,6 +48,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Link
                 key={item.href}
                 href={item.href}
+                prefetch={true}
                 className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
                   isActive 
                     ? 'bg-primary text-primary-foreground font-medium' 
@@ -83,6 +84,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Link
               key={item.href}
               href={item.href}
+              prefetch={true}
               className={`flex flex-col items-center justify-center w-full py-2 rounded-lg transition-all ${
                 isActive 
                   ? 'text-primary' 

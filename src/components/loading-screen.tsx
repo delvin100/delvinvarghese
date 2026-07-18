@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { usePathname } from "next/navigation"
 
 const greetings = [
   "Hello",
@@ -16,6 +17,7 @@ const greetings = [
 ]
 
 export function LoadingScreen() {
+  const pathname = usePathname()
   const [isLoading, setIsLoading] = useState(true)
   const [index, setIndex] = useState(0)
 
@@ -36,6 +38,10 @@ export function LoadingScreen() {
 
     return () => clearTimeout(timer)
   }, [])
+
+  if (pathname !== "/") {
+    return null
+  }
 
   return (
     <AnimatePresence>

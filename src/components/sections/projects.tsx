@@ -45,20 +45,23 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.7, ease: "easeOut" }}
-                className="relative group sticky w-full bg-[#050505] border border-white/10 rounded-[2.5rem] p-6 lg:p-12 overflow-hidden shadow-2xl"
-                style={{ top: `${topOffset}px` }}
+                className="relative group lg:sticky w-full bg-[#050505] border border-white/10 rounded-[2.5rem] p-6 lg:p-12 overflow-hidden shadow-2xl lg:top-[var(--sticky-top)]"
+                style={{ '--sticky-top': `${topOffset}px` } as React.CSSProperties}
               >
                 {/* Background Glow Orb inside the solid card */}
-                <div className={`absolute top-1/2 -translate-y-1/2 w-full max-w-lg h-[400px] bg-primary/20 blur-[120px] rounded-full pointer-events-none transition-opacity duration-700 opacity-20 group-hover:opacity-50 ${isEven ? 'right-0' : 'left-0'}`} />
+                <div aria-hidden="true" className={`absolute top-1/2 -translate-y-1/2 w-full max-w-lg h-[400px] bg-primary/20 blur-[120px] rounded-full pointer-events-none transition-opacity duration-700 opacity-20 group-hover:opacity-50 ${isEven ? 'right-0' : 'left-0'}`} />
 
                 <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center z-10">
                   
                   {/* Content Container */}
                   <div className={`flex flex-col justify-center order-2 ${isEven ? 'lg:order-1' : 'lg:order-2'} relative`}>
-                    
-                    {/* Big Background Number */}
-                    <div className={`absolute ${isEven ? '-top-24 lg:-top-32' : '-top-12 lg:-top-20'} ${isEven ? '-left-4 lg:-left-8' : '-right-4 lg:-right-8'} text-[6rem] lg:text-[8rem] font-black text-white/[0.04] select-none pointer-events-none -z-10 leading-none tracking-tighter`}>
-                      0{index + 1}
+
+                    {/* Elegant Circular Badge & Divider */}
+                    <div aria-hidden="true" className={`flex items-center gap-5 mb-8 w-full transition-transform duration-500 ${!isEven ? 'lg:flex-row-reverse lg:group-hover:-translate-x-2 group-hover:translate-x-2' : 'group-hover:translate-x-2'}`}>
+                      <div className="flex items-center justify-center w-12 h-12 rounded-full border border-white/10 bg-white/[0.02] text-white/60 font-mono text-lg shadow-[inset_0_0_20px_rgba(255,255,255,0.02)] group-hover:border-blue-500/30 group-hover:text-blue-400 transition-colors duration-500 shrink-0">
+                        {String(index + 1).padStart(2, '0')}
+                      </div>
+                      <div className={`h-px flex-1 transition-colors duration-500 from-white/10 via-white/5 to-transparent group-hover:from-blue-500/30 ${!isEven ? 'bg-gradient-to-r lg:bg-gradient-to-l' : 'bg-gradient-to-r'}`}></div>
                     </div>
 
                     <h3 className="text-4xl lg:text-5xl font-bold text-white mb-6 tracking-tight bg-clip-text group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-primary/70 transition-all duration-500">
@@ -77,7 +80,7 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
                       ))}
                     </div>
                     
-                    <div className="flex items-center gap-6">
+                    <div className="flex flex-wrap items-center gap-6">
                       {project.live_url && (
                         <a 
                           href={project.live_url} 
@@ -123,11 +126,12 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
                             src={project.image_url || "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000&auto=format&fit=crop"} 
                             alt={project.title}
                             fill 
+                            priority={index === 0}
                             sizes="(max-width: 1024px) 100vw, 50vw"
                             className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out" 
                             unoptimized={true}
                           />
-                          <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500" />
+                          <div aria-hidden="true" className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500" />
                         </div>
                       </div>
                       
