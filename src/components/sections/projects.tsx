@@ -5,6 +5,7 @@ import Image from "next/image"
 import { ArrowUpRight } from "lucide-react"
 import { FaGithub } from "react-icons/fa"
 import { SectionHeader } from "../ui/section-header"
+import { TechIcon } from "../ui/tech-icon"
 
 export interface Project {
   id: string;
@@ -74,7 +75,8 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
                     
                     <div className="flex flex-wrap gap-2.5 mb-10">
                       {project.tags?.map(t => (
-                        <span key={t} className="text-xs font-mono text-primary/80 bg-primary/10 border border-primary/20 px-3 py-1.5 rounded-full shadow-[0_0_10px_rgba(var(--primary),0.1)] select-none">
+                        <span key={t} className="flex items-center gap-2 text-xs font-medium text-slate-300 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.02)] select-none hover:bg-white/10 transition-colors">
+                          <TechIcon name={t} className="w-4 h-4" />
                           {t}
                         </span>
                       ))}

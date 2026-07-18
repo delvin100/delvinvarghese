@@ -6,8 +6,8 @@ import { createProject } from '@/app/actions/portfolio'
 import { SubmitButton } from '@/components/admin/submit-button'
 import { ImageSelector } from '@/components/admin/image-selector'
 import Link from 'next/link'
-import { Type, FileText, Tags, Link as LinkIcon, ListOrdered, Eye, Sparkles } from 'lucide-react'
-import { FaGithub } from 'react-icons/fa'
+import { Type, FileText, ListOrdered, Eye, Sparkles } from 'lucide-react'
+import { ProjectUrlFields } from '@/components/admin/project-url-fields'
 
 export default function NewProjectPage() {
   return (
@@ -54,30 +54,7 @@ export default function NewProjectPage() {
 
               <ImageSelector defaultValue="" />
 
-            <div className="space-y-3">
-              <label htmlFor="tags" className="text-sm font-medium flex items-center gap-2 text-foreground/80">
-                <Tags className="h-4 w-4 text-rose-400" />
-                Tags (comma separated)
-              </label>
-              <Input id="tags" name="tags" placeholder="Python, React, Node.js" className="bg-background/50 border-white/10 focus-visible:ring-rose-500/50 transition-all h-11" />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-3">
-                <label htmlFor="live_url" className="text-sm font-medium flex items-center gap-2 text-foreground/80">
-                  <LinkIcon className="h-4 w-4 text-cyan-400" />
-                  Live Demo URL
-                </label>
-                <Input id="live_url" name="live_url" placeholder="https://..." className="bg-background/50 border-white/10 focus-visible:ring-cyan-500/50 transition-all h-11" />
-              </div>
-              <div className="space-y-3">
-                <label htmlFor="github_url" className="text-sm font-medium flex items-center gap-2 text-foreground/80">
-                  <FaGithub className="h-4 w-4 text-slate-400" />
-                  GitHub URL
-                </label>
-                <Input id="github_url" name="github_url" placeholder="https://github.com/..." className="bg-background/50 border-white/10 focus-visible:ring-slate-500/50 transition-all h-11" />
-              </div>
-            </div>
+            <ProjectUrlFields />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-5 bg-background/30 rounded-lg border border-white/5 mt-4">
               <div className="space-y-3">

@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "gkmxlvqfvdcztiepbmee.supabase.co",
       },
+      {
+        protocol: "https",
+        hostname: "api.microlink.io",
+      },
     ],
   },
 };

@@ -57,6 +57,15 @@ export async function updateProject(id: string, formData: FormData) {
   redirect('/admin/projects?success=project_updated')
 }
 
+export async function toggleProjectPublishStatus(id: string, is_published: boolean) {
+  const supabase = await createClient()
+  
+  const { error } = await supabase.from('projects').update({ is_published }).eq('id', id)
+  if (error) throw new Error(error.message)
+  
+  revalidatePath('/', 'layout')
+}
+
 export async function deleteProject(id: string) {
   const supabase = await createClient()
   const { error } = await supabase.from('projects').delete().eq('id', id)

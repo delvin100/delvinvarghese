@@ -5,7 +5,7 @@ import { Reorder, useDragControls } from "framer-motion"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Save, GripVertical, Pencil, Trash2 } from "lucide-react"
 import Link from "next/link"
-import { updateProjectsOrder, deleteProjects } from "@/app/actions/portfolio"
+import { updateProjectsOrder, deleteProjects, toggleProjectPublishStatus } from "@/app/actions/portfolio"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import { DeleteProjectButton } from "./delete-project-button"
@@ -74,15 +74,28 @@ function ProjectItem({
         </div>
       </td>
       <td className="px-4 py-4 text-center align-middle">
-        {project.is_published ? (
-          <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-            Published
-          </span>
-        ) : (
-          <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-slate-800 text-slate-300 border border-slate-700">
-            Draft
-          </span>
-        )}
+        <button
+          onClick={async () => {
+            const nextStatus = !project.is_published;
+            try {
+              await toggleProjectPublishStatus(project.id, nextStatus);
+              toast.success(`Project ${nextStatus ? 'Published' : 'Moved to Draft'}`);
+            } catch (error: any) {
+              toast.error("Failed to update status");
+            }
+          }}
+          className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium border cursor-pointer hover:scale-105 transition-all shadow-sm ${
+            project.is_published 
+              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/20 hover:border-emerald-500/40 hover:shadow-emerald-500/10' 
+              : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700 hover:text-white hover:border-slate-500'
+          }`}
+        >
+          {project.is_published ? (
+            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Published</span>
+          ) : (
+            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-slate-500"></span> Draft</span>
+          )}
+        </button>
       </td>
       <td className="px-4 py-4 text-center align-middle">
         <div className="flex justify-center items-center gap-1">

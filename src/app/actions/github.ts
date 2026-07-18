@@ -70,7 +70,7 @@ export async function syncSelectedRepos(repos: any[]) {
     description: repo.description || 'No description provided.',
     github_url: repo.html_url,
     live_url: repo.homepage || '',
-    image_url: '', // Left blank so user can add custom cover image
+    image_url: repo.homepage ? `https://api.microlink.io?url=${encodeURIComponent(repo.homepage)}&screenshot=true&meta=false&embed=screenshot.url` : '',
     is_published: false, // Draft by default
     order_index: baseOrderIndex + index,
     tags: repo.topics && repo.topics.length > 0 ? repo.topics : (repo.language ? [repo.language] : [])

@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Search } from 'lucide-react'
 import { FaGithub, FaLock, FaGlobe } from 'react-icons/fa'
 import { fetchAvailableRepos, syncSelectedRepos } from '@/app/actions/github'
+import { Input } from '@/components/ui/input'
 import {
   Dialog,
   DialogContent,
@@ -21,6 +22,7 @@ export function GitHubSyncButton() {
   const [isLoading, setIsLoading] = useState(false)
   const [repos, setRepos] = useState<any[]>([])
   const [selectedRepos, setSelectedRepos] = useState<Set<string>>(new Set())
+  const [searchQuery, setSearchQuery] = useState('')
 
   // Automatically fetch when the modal is opened
   useEffect(() => {
@@ -36,6 +38,7 @@ export function GitHubSyncButton() {
       setTimeout(() => {
         setRepos([])
         setSelectedRepos(new Set())
+        setSearchQuery('')
       }, 300)
     }
   }
@@ -52,8 +55,6 @@ export function GitHubSyncButton() {
           setIsOpen(false)
         } else {
           setRepos(result.data)
-          // Default select all
-          setSelectedRepos(new Set(result.data.map((r: any) => r.html_url)))
         }
       }
     } catch (error: any) {
@@ -89,13 +90,24 @@ export function GitHubSyncButton() {
     setSelectedRepos(next)
   }
 
+  const filteredRepos = repos.filter(repo => 
+    repo.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    (repo.description && repo.description.toLowerCase().includes(searchQuery.toLowerCase()))
+  )
+
   const toggleSelectAll = () => {
-    if (selectedRepos.size === repos.length) {
-      setSelectedRepos(new Set())
+    if (filteredRepos.length === 0) return
+    const allFilteredSelected = filteredRepos.every(r => selectedRepos.has(r.html_url))
+    const next = new Set(selectedRepos)
+    if (allFilteredSelected) {
+      filteredRepos.forEach(r => next.delete(r.html_url))
     } else {
-      setSelectedRepos(new Set(repos.map(r => r.html_url)))
+      filteredRepos.forEach(r => next.add(r.html_url))
     }
+    setSelectedRepos(next)
   }
+
+  const selectedFilteredCount = filteredRepos.filter(r => selectedRepos.has(r.html_url)).length
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
@@ -137,22 +149,37 @@ export function GitHubSyncButton() {
             </div>
           ) : (
             <div className="space-y-4 h-full flex flex-col">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <Input 
+                  placeholder="Search repositories..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9 bg-[#0f172a] border-[#1e293b] text-slate-200 placeholder:text-slate-500 focus-visible:ring-1 focus-visible:ring-blue-500 focus-visible:border-blue-500 focus-visible:ring-offset-0"
+                />
+              </div>
+
               <div className="flex items-center justify-between pb-2 border-b border-[#1e293b]">
                 <label className="flex items-center gap-2 cursor-pointer group">
                   <input 
                     type="checkbox"
                     className="w-4 h-4 rounded border-[#334155] bg-[#0f172a] text-blue-600 focus:ring-blue-500/50 focus:ring-offset-[#0b1120]"
-                    checked={selectedRepos.size === repos.length && repos.length > 0}
+                    checked={filteredRepos.length > 0 && filteredRepos.every(r => selectedRepos.has(r.html_url))}
                     onChange={toggleSelectAll}
                   />
                   <span className="text-sm font-medium text-slate-200 group-hover:text-white transition-colors">
-                    Select All ({selectedRepos.size}/{repos.length})
+                    Select All {searchQuery ? 'Filtered' : ''} ({selectedFilteredCount}/{filteredRepos.length})
                   </span>
                 </label>
               </div>
 
               <div className="flex-1 overflow-y-auto pr-2 space-y-2 max-h-[40vh] custom-scrollbar">
-                {repos.map(repo => (
+                {filteredRepos.length === 0 ? (
+                  <div className="text-center py-8 text-slate-500 text-sm">
+                    No repositories found matching your search.
+                  </div>
+                ) : (
+                  filteredRepos.map(repo => (
                   <label 
                     key={repo.html_url} 
                     className="flex items-start gap-3 p-3 rounded-lg border border-[#1e293b] bg-slate-900/50 hover:bg-slate-800/50 cursor-pointer transition-colors"
@@ -185,7 +212,7 @@ export function GitHubSyncButton() {
                       </p>
                     </div>
                   </label>
-                ))}
+                )))}
               </div>
             </div>
           )}
