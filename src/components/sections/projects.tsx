@@ -1,5 +1,7 @@
 "use client"
 
+import { useState, useEffect } from "react"
+
 import { motion } from "framer-motion"
 import Image from "next/image"
 import { ArrowUpRight } from "lucide-react"
@@ -18,8 +20,69 @@ export interface Project {
 }
 
 export function ProjectsSection({ projects }: { projects: Project[] }) {
+  const [showAll, setShowAll] = useState(false);
+  const [showFloating, setShowFloating] = useState(false);
+  
+  const visibleProjects = showAll ? projects : projects.slice(0, 4);
+
+  useEffect(() => {
+    if (!showAll) {
+      setShowFloating(false);
+      return;
+    }
+
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const proj5 = document.getElementById('project-4');
+          const section = document.getElementById('projects');
+          
+          if (proj5 && section) {
+            const proj5Rect = proj5.getBoundingClientRect();
+            const sectionRect = section.getBoundingClientRect();
+            
+            const isPast4 = proj5Rect.top <= 150;
+            const isNotAtBottom = sectionRect.bottom > window.innerHeight + 100;
+            
+            setShowFloating(prev => {
+              const next = isPast4 && isNotAtBottom;
+              return prev === next ? prev : next;
+            });
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    // Check initially after a short delay to allow DOM to update
+    setTimeout(handleScroll, 100);
+    
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [showAll]);
+
+  const handleToggleShow = () => {
+    if (showAll) {
+      // Instantly hide the extra projects and snap to the top of the section
+      setShowAll(false);
+      
+      // Use setTimeout to allow the DOM to remove the extra projects first
+      setTimeout(() => {
+        const proj4 = document.getElementById('project-3');
+        if (proj4) {
+          proj4.scrollIntoView({ behavior: 'instant', block: 'center' });
+        }
+      }, 0);
+    } else {
+      setShowAll(true);
+    }
+  };
+
   return (
-    <section id="projects" className="py-24 relative z-10">
+    <section id="projects" className="pt-24 pb-12 relative z-10">
       <div className="container mx-auto px-6 md:px-12">
         <SectionHeader 
           title="Featured Projects" 
@@ -34,13 +97,15 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
           } 
         />
         
-        <div className="flex flex-col gap-10 mt-20 pb-32">
-          {projects.map((project, index) => {
+        <div className="flex flex-col gap-10 mt-20">
+          {visibleProjects.map((project, index) => {
             const isEven = index % 2 === 0;
-            const topOffset = 100 + index * 40;
+            // Fixed top offset so they completely cover each other
+            const topOffset = 120;
             
             return (
               <motion.div
+                id={`project-${index}`}
                 key={project.id}
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -123,15 +188,15 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
                         </div>
                         
                         {/* Browser Content (Image) */}
-                        <div className="relative aspect-[16/10] w-full overflow-hidden">
+                        <div className="relative aspect-[16/10] w-full overflow-hidden bg-white/5">
                           <Image 
                             src={project.image_url || "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000&auto=format&fit=crop"} 
                             alt={project.title}
                             fill 
                             priority={index === 0}
                             sizes="(max-width: 1024px) 100vw, 50vw"
+                            quality={90}
                             className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out" 
-                            unoptimized={true}
                           />
                           <div aria-hidden="true" className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500" />
                         </div>
@@ -145,6 +210,25 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
             );
           })}
         </div>
+
+        {projects.length > 4 && (
+          <div className="flex justify-center mt-12 h-12">
+            <div className={`transition-all duration-300 ${showFloating ? 'fixed bottom-12 left-1/2 -translate-x-1/2 z-[100]' : ''}`}>
+              <button
+                onClick={handleToggleShow}
+                className={`group relative px-6 py-2.5 text-sm rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-medium hover:bg-white/20 transition-all duration-300 overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.5)] hover:shadow-[0_0_30px_rgba(59,130,246,0.3)]`}
+              >
+                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-500/20 to-emerald-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <span className="relative z-10 flex items-center gap-2 drop-shadow-md">
+                  {showAll ? "Show Less" : "Show More Projects"}
+                  <span>
+                    {showAll ? "↑" : "↓"}
+                  </span>
+                </span>
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   )

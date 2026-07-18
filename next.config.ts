@@ -16,6 +16,7 @@ const nextConfig: NextConfig = {
         hostname: "api.microlink.io",
       },
     ],
+    qualities: [25, 50, 75, 90, 100],
   },
 };
 
