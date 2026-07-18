@@ -74,8 +74,8 @@ export function ExperienceSection({ experiences }: { experiences: Experience[] }
                     <div className="flex items-center gap-2 text-primary font-semibold mb-2 justify-start md:justify-start">
                       <Calendar size={16} />
                       <span>
-                        {exp.start_date ? new Date(exp.start_date).getFullYear() : ''} 
-                        {exp.end_date ? ` - ${new Date(exp.end_date).getFullYear()}` : ' - Present'}
+                        {exp.start_date ? new Date(exp.start_date).getUTCFullYear() : ''} 
+                        {exp.end_date ? ` - ${new Date(exp.end_date).getUTCFullYear()}` : ' - Present'}
                       </span>
                     </div>
                     

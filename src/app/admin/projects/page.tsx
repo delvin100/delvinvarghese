@@ -29,13 +29,11 @@ export default async function AdminProjectsPage() {
             Manage the projects displayed on your portfolio.
           </p>
         </div>
-        <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
-          <div className="flex-1 sm:flex-none">
-            <GitHubSyncButton />
-          </div>
-          <Link href="/admin/projects/new" className="flex-1 sm:flex-none">
-            <Button className="w-full">
-              <Plus className="mr-2 h-4 w-4" />
+        <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto justify-end">
+          <GitHubSyncButton />
+          <Link href="/admin/projects/new">
+            <Button>
+              <Plus className="h-4 w-4" />
               Add Project
             </Button>
           </Link>

@@ -5,10 +5,10 @@ import { Reorder, useDragControls } from "framer-motion"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Save, GripVertical, Pencil, Trash2 } from "lucide-react"
 import Link from "next/link"
-import { updateProjectsOrder, deleteProjects } from "@/app/actions/portfolio"
+import { updateExperiencesOrder, deleteExperiences } from "@/app/actions/portfolio"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
-import { DeleteProjectButton } from "./delete-project-button"
+import { DeleteExperienceButton } from "./delete-experience-button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
   Dialog,
@@ -19,21 +19,24 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { deleteExperience } from "@/app/actions/portfolio"
 
-type Project = {
+type Experience = {
   id: string
-  title: string
-  is_published: boolean
+  role: string
+  company: string
+  start_date: string | null
+  end_date: string | null
   order_index: number
 }
 
-function ProjectItem({ 
-  project, 
+function ExperienceItem({ 
+  exp, 
   isSelectionMode,
   isSelected,
   onToggleSelect 
 }: { 
-  project: Project
+  exp: Experience
   isSelectionMode: boolean
   isSelected: boolean
   onToggleSelect: (id: string) => void
@@ -42,8 +45,8 @@ function ProjectItem({
 
   return (
     <Reorder.Item 
-      value={project} 
-      id={project.id}
+      value={exp} 
+      id={exp.id}
       as="tr"
       dragListener={false} 
       dragControls={controls}
@@ -66,33 +69,29 @@ function ProjectItem({
           {isSelectionMode && (
             <Checkbox 
               checked={isSelected}
-              onCheckedChange={() => onToggleSelect(project.id)}
+              onCheckedChange={() => onToggleSelect(exp.id)}
               className="border-slate-500"
             />
           )}
-          {project.title}
+          {exp.role}
         </div>
       </td>
-      <td className="px-4 py-4 text-center align-middle">
-        {project.is_published ? (
-          <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-            Published
-          </span>
-        ) : (
-          <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-slate-800 text-slate-300 border border-slate-700">
-            Draft
-          </span>
-        )}
+      <td className="px-4 py-4 text-center align-middle text-slate-300">
+        {exp.company}
+      </td>
+      <td className="px-4 py-4 text-center align-middle text-slate-300">
+        {exp.start_date ? new Date(exp.start_date).toLocaleDateString('en-US', { timeZone: 'UTC', year: 'numeric', month: 'short' }) : ''} 
+        {exp.end_date ? ` - ${new Date(exp.end_date).toLocaleDateString('en-US', { timeZone: 'UTC', year: 'numeric', month: 'short' })}` : ' - Present'}
       </td>
       <td className="px-4 py-4 text-center align-middle">
         <div className="flex justify-center items-center gap-1">
           {!isSelectionMode && (
             <>
-              <Link href={`/admin/projects/${project.id}`} className={buttonVariants({ variant: "ghost", size: "icon", className: "h-8 w-8 text-blue-400 hover:text-blue-300 hover:bg-blue-400/10" })}>
+              <Link href={`/admin/experience/${exp.id}`} className={buttonVariants({ variant: "ghost", size: "icon", className: "h-8 w-8 text-blue-400 hover:text-blue-300 hover:bg-blue-400/10" })}>
                 <Pencil className="h-4 w-4" />
                 <span className="sr-only">Edit</span>
               </Link>
-              <DeleteProjectButton projectId={project.id} projectTitle={project.title} />
+              <DeleteExperienceButton experienceId={exp.id} experienceRole={exp.role} />
             </>
           )}
         </div>
@@ -101,12 +100,12 @@ function ProjectItem({
   )
 }
 
-export function ProjectsDndList({ initialProjects }: { initialProjects: Project[] }) {
-  const [projects, setProjects] = useState<Project[]>(initialProjects)
+export function ExperienceDndList({ initialExperiences }: { initialExperiences: Experience[] }) {
+  const [experiences, setExperiences] = useState<Experience[]>(initialExperiences)
   
   useEffect(() => {
-    setProjects(initialProjects)
-  }, [initialProjects])
+    setExperiences(initialExperiences)
+  }, [initialExperiences])
 
   const [isSaving, setIsSaving] = useState(false)
   const [isSelectionMode, setIsSelectionMode] = useState(false)
@@ -120,13 +119,13 @@ export function ProjectsDndList({ initialProjects }: { initialProjects: Project[
     setIsSaving(true)
     
     try {
-      const updates = projects.map((p, index) => ({
-        id: p.id,
+      const updates = experiences.map((e, index) => ({
+        id: e.id,
         order_index: index + 1
       }))
 
-      await updateProjectsOrder(updates)
-      toast.success("Project Order Saved!")
+      await updateExperiencesOrder(updates)
+      toast.success("Experience Order Saved!")
       router.refresh()
     } catch (error: any) {
       toast.error("Failed to save order", {
@@ -157,16 +156,16 @@ export function ProjectsDndList({ initialProjects }: { initialProjects: Project[
     
     setIsDeletingBulk(true)
     try {
-      await deleteProjects(Array.from(selectedIds))
-      toast.success(`${selectedIds.size} project(s) deleted successfully`)
+      await deleteExperiences(Array.from(selectedIds))
+      toast.success(`${selectedIds.size} experience(s) deleted successfully`)
       
       // Update local state
-      setProjects(prev => prev.filter(p => !selectedIds.has(p.id)))
+      setExperiences(prev => prev.filter(e => !selectedIds.has(e.id)))
       setIsSelectionMode(false)
       setSelectedIds(new Set())
       setIsDeleteDialogOpen(false)
     } catch (error: any) {
-      toast.error("Failed to delete projects", {
+      toast.error("Failed to delete experiences", {
         description: error.message,
       })
     } finally {
@@ -174,9 +173,9 @@ export function ProjectsDndList({ initialProjects }: { initialProjects: Project[
     }
   }
 
-  const selectedProjectNames = projects
-    .filter(p => selectedIds.has(p.id))
-    .map(p => p.title)
+  const selectedExperienceRoles = experiences
+    .filter(e => selectedIds.has(e.id))
+    .map(e => e.role)
 
   const formatNamesList = (names: string[]) => {
     if (names.length === 0) return ""
@@ -191,7 +190,7 @@ export function ProjectsDndList({ initialProjects }: { initialProjects: Project[
         <div className="flex flex-col gap-2">
           <div>
             <h3 className="font-semibold text-primary">Interactive Layout Editor</h3>
-            <p className="text-sm text-muted-foreground mt-1">Drag the handles (⋮⋮) to reorder your projects.</p>
+            <p className="text-sm text-muted-foreground mt-1">Drag the handles (⋮⋮) to reorder your experience.</p>
           </div>
           <div className="flex items-center gap-2 mt-2">
             <Checkbox 
@@ -217,10 +216,10 @@ export function ProjectsDndList({ initialProjects }: { initialProjects: Project[
                     <div className="p-2 bg-red-500/10 rounded-full">
                       <Trash2 className="h-5 w-5 text-red-500" />
                     </div>
-                    Delete Selected Projects
+                    Delete Selected Experiences
                   </DialogTitle>
                   <DialogDescription className="text-slate-400 text-base leading-relaxed pt-2">
-                    Are you sure you want to delete <strong className="text-white font-semibold">{formatNamesList(selectedProjectNames)}</strong>? This action cannot be undone.
+                    Are you sure you want to delete <strong className="text-white font-semibold">{formatNamesList(selectedExperienceRoles)}</strong>? This action cannot be undone.
                   </DialogDescription>
                 </DialogHeader>
                 <DialogFooter className="sm:justify-end gap-3 pt-6 border-t border-[#1e293b]/50 mt-2 bg-transparent">
@@ -265,31 +264,32 @@ export function ProjectsDndList({ initialProjects }: { initialProjects: Project[
         <table className="w-full caption-bottom text-sm">
           <thead className="[&_tr]:border-b border-white/10">
             <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-              <th className="h-12 px-4 text-center text-slate-400 font-bold uppercase text-xs tracking-wider py-4 align-middle">Title</th>
-              <th className="h-12 px-4 text-center text-slate-400 font-bold uppercase text-xs tracking-wider py-4 align-middle">Status</th>
+              <th className="h-12 px-4 text-center text-slate-400 font-bold uppercase text-xs tracking-wider py-4 align-middle">Role</th>
+              <th className="h-12 px-4 text-center text-slate-400 font-bold uppercase text-xs tracking-wider py-4 align-middle">Company</th>
+              <th className="h-12 px-4 text-center text-slate-400 font-bold uppercase text-xs tracking-wider py-4 align-middle">Dates</th>
               <th className="h-12 px-4 text-center text-slate-400 font-bold uppercase text-xs tracking-wider py-4 align-middle">Actions</th>
             </tr>
           </thead>
           <Reorder.Group 
             as="tbody"
             axis="y" 
-            values={projects} 
-            onReorder={setProjects}
+            values={experiences} 
+            onReorder={setExperiences}
             className="[&_tr:last-child]:border-0"
           >
-            {projects.length === 0 ? (
+            {experiences.length === 0 ? (
               <tr>
-                <td colSpan={3} className="text-center py-8 text-slate-400">
-                  No projects found. Click "Add Project" to create one.
+                <td colSpan={4} className="text-center py-8 text-slate-400">
+                  No experience found. Click "Add Experience" to create one.
                 </td>
               </tr>
             ) : (
-              projects.map(project => (
-                <ProjectItem 
-                  key={project.id} 
-                  project={project} 
+              experiences.map(exp => (
+                <ExperienceItem 
+                  key={exp.id} 
+                  exp={exp} 
                   isSelectionMode={isSelectionMode}
-                  isSelected={selectedIds.has(project.id)}
+                  isSelected={selectedIds.has(exp.id)}
                   onToggleSelect={handleToggleSelect}
                 />
               ))

@@ -64,6 +64,13 @@ export async function deleteProject(id: string) {
   revalidatePath('/', 'layout')
 }
 
+export async function deleteProjects(ids: string[]) {
+  const supabase = await createClient()
+  const { error } = await supabase.from('projects').delete().in('id', ids)
+  if (error) throw new Error(error.message)
+  revalidatePath('/', 'layout')
+}
+
 export async function updateProjectsOrder(updates: { id: string, order_index: number }[]) {
   const supabase = await createClient()
   const promises = updates.map(update => 
@@ -176,6 +183,20 @@ export async function deleteCategory(id: string) {
   revalidatePath('/', 'layout')
 }
 
+export async function deleteCategories(ids: string[]) {
+  const supabase = await createClient()
+  
+  // Delete all skills in these categories first
+  const { error: skillsError } = await supabase.from('skills').delete().in('category_id', ids)
+  if (skillsError) throw new Error(skillsError.message)
+  
+  // Delete the categories
+  const { error } = await supabase.from('skill_categories').delete().in('id', ids)
+  if (error) throw new Error(error.message)
+  
+  revalidatePath('/', 'layout')
+}
+
 export async function updateCategoriesOrder(updates: { id: string, order_index: number }[]) {
   const supabase = await createClient()
   const promises = updates.map(update => 
@@ -230,6 +251,13 @@ export async function deleteSkill(id: string) {
   revalidatePath('/', 'layout')
 }
 
+export async function deleteSkills(ids: string[]) {
+  const supabase = await createClient()
+  const { error } = await supabase.from('skills').delete().in('id', ids)
+  if (error) throw new Error(error.message)
+  revalidatePath('/', 'layout')
+}
+
 export async function updateSkillsOrder(updates: { id: string, order_index: number }[]) {
   const supabase = await createClient()
   
@@ -264,7 +292,7 @@ export async function createExperience(formData: FormData) {
   if (error) throw new Error(error.message)
   
   revalidatePath('/', 'layout')
-  redirect('/admin/experience')
+  redirect('/admin/experience?success=experience_added')
 }
 
 export async function updateExperience(id: string, formData: FormData) {
@@ -283,12 +311,30 @@ export async function updateExperience(id: string, formData: FormData) {
   if (error) throw new Error(error.message)
   
   revalidatePath('/', 'layout')
-  redirect('/admin/experience')
+  redirect('/admin/experience?success=experience_updated')
 }
 
 export async function deleteExperience(id: string) {
   const supabase = await createClient()
   const { error } = await supabase.from('experience').delete().eq('id', id)
+  if (error) throw new Error(error.message)
+  revalidatePath('/', 'layout')
+}
+
+export async function deleteExperiences(ids: string[]) {
+  const supabase = await createClient()
+  const { error } = await supabase.from('experience').delete().in('id', ids)
+  if (error) throw new Error(error.message)
+  revalidatePath('/', 'layout')
+}
+
+export async function updateExperiencesOrder(updates: { id: string, order_index: number }[]) {
+  const supabase = await createClient()
+  const promises = updates.map(update => 
+    supabase.from('experience').update({ order_index: update.order_index }).eq('id', update.id)
+  )
+  const results = await Promise.all(promises)
+  const error = results.find(r => r.error)?.error
   if (error) throw new Error(error.message)
   revalidatePath('/', 'layout')
 }

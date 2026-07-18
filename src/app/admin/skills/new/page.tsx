@@ -72,7 +72,7 @@ export default async function NewSkillPage() {
             <IconSelector />
 
             <div className="pt-6 flex justify-end">
-              <SubmitButton label="Launch Skill" />
+              <SubmitButton label="Launch Skill" loadingText="Launching..." />
             </div>
           </form>
         </CardContent>

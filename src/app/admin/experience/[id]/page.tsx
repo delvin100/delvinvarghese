@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { updateExperience } from '@/app/actions/portfolio'
+import { SubmitButton } from '@/components/admin/submit-button'
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
@@ -20,13 +21,17 @@ export default async function EditExperiencePage({ params }: { params: Promise<{
   const updateExperienceWithId = updateExperience.bind(null, id)
 
   return (
-    <div className="space-y-8 max-w-2xl mx-auto pb-12">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">Edit Experience</h1>
-        <Link href="/admin/experience">
-          <Button variant="outline" className="gap-2 border-muted-foreground/20 hover:bg-muted/20">
-            <ArrowLeft className="w-4 h-4" /> Back
-          </Button>
+    <div className="space-y-8 max-w-2xl mx-auto relative mt-10 pb-12">
+      {/* Background Glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[120%] h-[600px] bg-primary/10 blur-[100px] rounded-full pointer-events-none -z-10 transform-gpu" />
+
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-400">Edit Experience</h1>
+          <p className="text-muted-foreground mt-2 text-sm sm:text-base">Update details of your professional journey.</p>
+        </div>
+        <Link href="/admin/experience" className="w-full sm:w-auto">
+          <Button variant="outline" className="w-full border-white/10 hover:bg-white/5">Cancel</Button>
         </Link>
       </div>
 
@@ -74,10 +79,8 @@ export default async function EditExperiencePage({ params }: { params: Promise<{
               <p className="text-xs text-muted-foreground mt-1">Valid icons: Briefcase, GraduationCap</p>
             </div>
 
-            <div className="pt-6">
-              <Button type="submit" className="w-full h-12 bg-blue-500 hover:bg-blue-600 text-white font-medium shadow-lg shadow-blue-500/20 transition-all hover:-translate-y-0.5 active:translate-y-0">
-                Save Changes
-              </Button>
+            <div className="pt-6 flex justify-end">
+              <SubmitButton label="Save Changes" />
             </div>
           </form>
         </CardContent>

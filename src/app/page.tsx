@@ -24,7 +24,7 @@ export default async function Home() {
     supabase.from('projects').select('*').order('order_index', { ascending: true }),
     supabase.from('skills').select('*').order('order_index', { ascending: true }),
     supabase.from('skill_categories').select('*').order('order_index', { ascending: true }),
-    supabase.from('experience').select('*').order('start_date', { ascending: false, nullsFirst: false }),
+    supabase.from('experience').select('*').order('order_index', { ascending: true }).order('start_date', { ascending: false, nullsFirst: false }),
     supabase.from('settings').select('*')
   ])
 

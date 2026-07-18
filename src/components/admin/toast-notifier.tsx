@@ -24,6 +24,10 @@ export function ToastNotifier() {
         toast.success("Project added successfully")
       } else if (success === "project_updated") {
         toast.success("Project updated successfully")
+      } else if (success === "experience_added") {
+        toast.success("Experience added successfully")
+      } else if (success === "experience_updated") {
+        toast.success("Experience updated successfully")
       }
 
       // Remove the query param from the URL so it doesn't fire again on refresh

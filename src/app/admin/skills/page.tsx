@@ -40,17 +40,17 @@ export default async function AdminSkillsPage() {
             Manage the skills displayed on your portfolio.
           </p>
         </div>
-        <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
-          <Link href="/admin/categories/new" className="flex-1 sm:flex-none">
-            <Button variant="outline" className="w-full">
-              <Plus className="mr-2 h-4 w-4" />
-              Category
+        <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto justify-end">
+          <Link href="/admin/categories/new">
+            <Button variant="outline">
+              <Plus className="h-4 w-4" />
+              Add Category
             </Button>
           </Link>
-          <Link href="/admin/skills/new" className="flex-1 sm:flex-none">
-            <Button className="w-full">
-              <Plus className="mr-2 h-4 w-4" />
-              Skill
+          <Link href="/admin/skills/new">
+            <Button>
+              <Plus className="h-4 w-4" />
+              Add Skill
             </Button>
           </Link>
         </div>

@@ -45,7 +45,7 @@ export default function NewCategoryPage() {
             <IconSelector />
 
             <div className="pt-6 flex justify-end">
-              <SubmitButton label="Create Category" />
+              <SubmitButton label="Create Category" loadingText="Creating..." />
             </div>
           </form>
         </CardContent>
