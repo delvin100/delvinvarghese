@@ -130,7 +130,7 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
                       <div className={`h-px flex-1 transition-colors duration-500 from-white/10 via-white/5 to-transparent group-hover:from-blue-500/30 ${!isEven ? 'bg-gradient-to-r lg:bg-gradient-to-l' : 'bg-gradient-to-r'}`}></div>
                     </div>
 
-                    <h3 className="text-4xl lg:text-5xl font-bold text-white mb-6 tracking-tight bg-clip-text group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-primary/70 transition-all duration-500">
+                    <h3 className="text-4xl lg:text-5xl font-bold mb-6 tracking-tight transition-all duration-500 bg-clip-text text-transparent bg-gradient-to-r from-white to-white group-hover:from-blue-400 group-hover:to-emerald-400 group-hover:translate-x-2">
                       {project.title}
                     </h3>
                     
@@ -159,7 +159,7 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
                           <ArrowUpRight size={18} strokeWidth={2.5} />
                         </a>
                       )}
-                      {project.github_url && (
+                      {project.github_url && !project.github_url.startsWith('HIDE_') && (
                         <a 
                           href={project.github_url} 
                           target="_blank" 
@@ -188,15 +188,15 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
                         </div>
                         
                         {/* Browser Content (Image) */}
-                        <div className="relative aspect-[16/10] w-full overflow-hidden bg-white/5">
+                        <div className="relative aspect-video w-full overflow-hidden bg-white/5">
                           <Image 
                             src={project.image_url || "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000&auto=format&fit=crop"} 
                             alt={project.title}
                             fill 
-                            priority={index === 0}
+                            priority={true}
                             sizes="(max-width: 1024px) 100vw, 50vw"
                             quality={90}
-                            className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out" 
+                            className="object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out" 
                           />
                           <div aria-hidden="true" className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500" />
                         </div>

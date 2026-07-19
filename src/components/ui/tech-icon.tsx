@@ -4,7 +4,7 @@ import {
   SiTailwindcss, SiNodedotjs, SiHtml5, SiCss, SiGit, 
   SiGithub, SiMongodb, SiPostgresql, SiFirebase, SiFramer,
   SiVuedotjs, SiSvelte, SiAngular, SiDocker, SiFigma, SiSupabase,
-  SiPrisma
+  SiPrisma, SiMysql, SiPhp
 } from 'react-icons/si';
 import { Terminal } from 'lucide-react';
 
@@ -15,6 +15,7 @@ const iconMap: Record<string, { icon: React.ElementType, color: string }> = {
   typescript: { icon: SiTypescript, color: '#3178C6' },
   javascript: { icon: SiJavascript, color: '#F7DF1E' },
   python: { icon: SiPython, color: '#3776AB' },
+  php: { icon: SiPhp, color: '#777BB4' },
   tailwind: { icon: SiTailwindcss, color: '#06B6D4' },
   tailwindcss: { icon: SiTailwindcss, color: '#06B6D4' },
   nodejs: { icon: SiNodedotjs, color: '#339933' },
@@ -25,6 +26,7 @@ const iconMap: Record<string, { icon: React.ElementType, color: string }> = {
   github: { icon: SiGithub, color: '#FFFFFF' },
   mongodb: { icon: SiMongodb, color: '#47A248' },
   postgresql: { icon: SiPostgresql, color: '#4169E1' },
+  mysql: { icon: SiMysql, color: '#4479A1' },
   firebase: { icon: SiFirebase, color: '#FFCA28' },
   supabase: { icon: SiSupabase, color: '#3ECF8E' },
   prisma: { icon: SiPrisma, color: '#2D3748' },

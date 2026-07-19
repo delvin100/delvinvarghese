@@ -13,12 +13,22 @@ export async function createProject(formData: FormData) {
   const tagsString = formData.get('tags') as string
   const tags = tagsString ? tagsString.split(',').map(t => t.trim()) : []
   
+  const hideGithub = formData.get('hide_github_link') === 'on'
+  let githubUrl = formData.get('github_url') as string
+  if (githubUrl) {
+    if (hideGithub && !githubUrl.startsWith('HIDE_')) {
+      githubUrl = `HIDE_${githubUrl}`
+    } else if (!hideGithub && githubUrl.startsWith('HIDE_')) {
+      githubUrl = githubUrl.replace(/^HIDE_/, '')
+    }
+  }
+
   const data = {
     title: formData.get('title') as string,
     description: formData.get('description') as string,
     image_url: await handleProjectImageUpload(formData),
     live_url: formData.get('live_url') as string,
-    github_url: formData.get('github_url') as string,
+    github_url: githubUrl,
     is_published: formData.get('is_published') === 'on',
     order_index: Number(formData.get('order_index') || 0),
     tags
@@ -38,12 +48,22 @@ export async function updateProject(id: string, formData: FormData) {
   const tagsString = formData.get('tags') as string
   const tags = tagsString ? tagsString.split(',').map(t => t.trim()) : []
   
+  const hideGithub = formData.get('hide_github_link') === 'on'
+  let githubUrl = formData.get('github_url') as string
+  if (githubUrl) {
+    if (hideGithub && !githubUrl.startsWith('HIDE_')) {
+      githubUrl = `HIDE_${githubUrl}`
+    } else if (!hideGithub && githubUrl.startsWith('HIDE_')) {
+      githubUrl = githubUrl.replace(/^HIDE_/, '')
+    }
+  }
+
   const data = {
     title: formData.get('title') as string,
     description: formData.get('description') as string,
     image_url: await handleProjectImageUpload(formData),
     live_url: formData.get('live_url') as string,
-    github_url: formData.get('github_url') as string,
+    github_url: githubUrl,
     is_published: formData.get('is_published') === 'on',
     order_index: Number(formData.get('order_index') || 0),
     tags

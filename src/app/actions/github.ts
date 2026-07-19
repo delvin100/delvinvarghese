@@ -40,16 +40,20 @@ export async function fetchAvailableRepos(username: string) {
   const repos = await response.json()
 
   // 2. Fetch existing projects to avoid duplicates
-  const { data: existingProjects } = await supabase.from('projects').select('github_url')
+  const { data: existingProjects } = await supabase.from('projects').select('github_url, title')
   const existingUrls = new Set((existingProjects || []).map(p => p.github_url).filter(Boolean))
+  const existingTitles = new Set((existingProjects || []).map(p => p.title?.toLowerCase()).filter(Boolean))
 
   // 3. Filter out forks, archived repos, and already synced repos
-  const newRepos = repos.filter((repo: any) => 
-    !repo.fork && 
-    !repo.archived && 
-    repo.html_url && 
-    !existingUrls.has(repo.html_url)
-  )
+  const newRepos = repos.filter((repo: any) => {
+    const expectedTitle = repo.name.replace(/[-_]/g, ' ').replace(/(^\w|\s\w)/g, (m: string) => m.toUpperCase()).toLowerCase();
+    
+    return !repo.fork && 
+           !repo.archived && 
+           repo.html_url && 
+           !existingUrls.has(repo.html_url) &&
+           !existingTitles.has(expectedTitle);
+  })
 
   return { success: true, data: newRepos }
 }
@@ -64,16 +68,39 @@ export async function syncSelectedRepos(repos: any[]) {
   const { data: existingProjects } = await supabase.from('projects').select('id')
   const baseOrderIndex = existingProjects ? existingProjects.length : 0
 
-  // 4. Map GitHub repo structure to our database structure
-  const projectsToInsert = repos.map((repo: any, index: number) => ({
-    title: repo.name.replace(/-/g, ' ').replace(/(^\w|\s\w)/g, (m: string) => m.toUpperCase()),
-    description: repo.description || 'No description provided.',
-    github_url: repo.html_url,
-    live_url: repo.homepage || '',
-    image_url: repo.homepage ? `https://api.microlink.io?url=${encodeURIComponent(repo.homepage)}&screenshot=true&meta=false&embed=screenshot.url` : '',
-    is_published: false, // Draft by default
-    order_index: baseOrderIndex + index,
-    tags: repo.topics && repo.topics.length > 0 ? repo.topics : (repo.language ? [repo.language] : [])
+  const token = process.env.GITHUB_TOKEN
+  const headers: any = { 'Accept': 'application/vnd.github.v3+json' }
+  if (token) headers['Authorization'] = `token ${token}`
+
+  // 4. Map GitHub repo structure to our database structure and fetch full languages
+  const projectsToInsert = await Promise.all(repos.map(async (repo: any, index: number) => {
+    let languages = repo.language ? [repo.language] : [];
+    
+    if (repo.languages_url) {
+      try {
+        const langRes = await fetch(repo.languages_url, { headers });
+        if (langRes.ok) {
+          const langData = await langRes.json();
+          const allLangs = Object.keys(langData);
+          if (allLangs.length > 0) {
+            languages = allLangs;
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to fetch full languages for repo:', repo.name);
+      }
+    }
+
+    return {
+      title: repo.name.replace(/[-_]/g, ' ').replace(/(^\w|\s\w)/g, (m: string) => m.toUpperCase()),
+      description: repo.description || 'No description provided.',
+      github_url: repo.html_url,
+      live_url: repo.homepage || '',
+      image_url: repo.homepage ? `https://api.microlink.io?url=${encodeURIComponent(repo.homepage)}&screenshot=true&meta=false&embed=screenshot.url` : '',
+      is_published: false, // Draft by default
+      order_index: baseOrderIndex + index,
+      tags: languages
+    }
   }))
 
   // 5. Insert into Supabase

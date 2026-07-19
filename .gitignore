@@ -41,8 +41,7 @@ yarn-error.log*
 next-env.d.ts
 
 # IDE / Editor
-.vscode/*
-!.vscode/settings.json
+.vscode
 *.code-workspace
 .idea/
 .DS_Store
