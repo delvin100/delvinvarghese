@@ -314,6 +314,7 @@ export async function createExperience(formData: FormData) {
     start_date: formData.get('start_date') as string || null,
     end_date: formData.get('end_date') as string || null,
     description: formData.get('description') as string,
+    technologies: formData.get('technologies') as string || null,
     icon: formData.get('icon') as string
   }
 
@@ -333,6 +334,7 @@ export async function updateExperience(id: string, formData: FormData) {
     start_date: formData.get('start_date') as string || null,
     end_date: formData.get('end_date') as string || null,
     description: formData.get('description') as string,
+    technologies: formData.get('technologies') as string || null,
     icon: formData.get('icon') as string
   }
 

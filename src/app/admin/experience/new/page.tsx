@@ -48,17 +48,22 @@ export default function NewExperiencePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="flex flex-col gap-2">
                 <label htmlFor="start_date" className="text-sm font-medium text-muted-foreground">Start Date</label>
-                <Input id="start_date" name="start_date" type="date" className="h-12 bg-muted/10 border-muted-foreground/20 focus-visible:ring-blue-500/50" />
+                <Input id="start_date" name="start_date" type="date" max={new Date().toISOString().split('T')[0]} className="h-12 bg-muted/10 border-muted-foreground/20 focus-visible:ring-blue-500/50" />
               </div>
               <div className="flex flex-col gap-2">
                 <label htmlFor="end_date" className="text-sm font-medium text-muted-foreground">End Date <span className="text-xs opacity-70">(Empty = Present)</span></label>
-                <Input id="end_date" name="end_date" type="date" className="h-12 bg-muted/10 border-muted-foreground/20 focus-visible:ring-blue-500/50" />
+                <Input id="end_date" name="end_date" type="date" max={new Date().toISOString().split('T')[0]} className="h-12 bg-muted/10 border-muted-foreground/20 focus-visible:ring-blue-500/50" />
               </div>
             </div>
 
             <div className="flex flex-col gap-2">
               <label htmlFor="description" className="text-sm font-medium text-muted-foreground">Description</label>
               <Textarea id="description" name="description" required placeholder="Describe your responsibilities" rows={5} className="bg-muted/10 border-muted-foreground/20 focus-visible:ring-blue-500/50 resize-none" />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor="technologies" className="text-sm font-medium text-muted-foreground">Technologies Used <span className="text-xs opacity-70">(Comma separated)</span></label>
+              <Input id="technologies" name="technologies" placeholder="e.g. React.js, Node.js, TailwindCSS" className="h-12 bg-muted/10 border-muted-foreground/20 focus-visible:ring-blue-500/50" />
             </div>
 
             <div className="flex flex-col gap-2">
