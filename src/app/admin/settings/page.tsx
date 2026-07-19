@@ -91,8 +91,8 @@ export default function SettingsPage() {
   return (
     <div className="space-y-8 max-w-5xl mx-auto py-6 animate-in fade-in duration-500">
       <div>
-        <h1 className="text-4xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-400 inline-block">Settings</h1>
-        <p className="text-muted-foreground mt-2 text-lg">
+        <h1 className="text-3xl font-bold tracking-tight">Manage Site</h1>
+        <p className="text-muted-foreground mt-2 text-sm sm:text-base">
           Manage your global site configuration.
         </p>
       </div>

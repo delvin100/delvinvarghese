@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { createClient } from '@/lib/supabase/server'
 import { Briefcase, Code, FileText, Award } from 'lucide-react'
+import Link from 'next/link'
 
 async function getStats() {
   const supabase = await createClient()
@@ -30,10 +31,9 @@ export default async function AdminOverviewPage() {
   const stats = await getStats()
 
   const cards = [
-    { title: 'Total Projects', value: stats.projects, icon: Briefcase, color: 'text-blue-500' },
-    { title: 'Skills Tracked', value: stats.skills, icon: Code, color: 'text-green-500' },
-    { title: 'Experience Roles', value: stats.experience, icon: FileText, color: 'text-amber-500' },
-    { title: 'Certifications', value: stats.certifications, icon: Award, color: 'text-purple-500' },
+    { title: 'Total Projects', value: stats.projects, icon: Briefcase, color: 'text-blue-500', href: '/admin/projects' },
+    { title: 'Experience Roles', value: stats.experience, icon: FileText, color: 'text-amber-500', href: '/admin/experience' },
+    { title: 'Skills Tracked', value: stats.skills, icon: Code, color: 'text-green-500', href: '/admin/skills' },
   ]
 
   return (
@@ -45,17 +45,19 @@ export default async function AdminOverviewPage() {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-3">
         {cards.map((card) => (
-          <Card key={card.title}>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">{card.title}</CardTitle>
-              <card.icon className={`h-4 w-4 ${card.color}`} />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{card.value}</div>
-            </CardContent>
-          </Card>
+          <Link href={card.href} key={card.title}>
+            <Card className="hover:bg-muted/50 transition-colors cursor-pointer h-full">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium">{card.title}</CardTitle>
+                <card.icon className={`h-4 w-4 ${card.color}`} />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{card.value}</div>
+              </CardContent>
+            </Card>
+          </Link>
         ))}
       </div>
       

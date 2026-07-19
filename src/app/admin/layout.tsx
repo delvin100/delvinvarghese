@@ -9,10 +9,9 @@ import { Button } from '@/components/ui/button'
 const navItems = [
   { href: '/admin', label: 'Overview', icon: LayoutDashboard },
   { href: '/admin/projects', label: 'Projects', icon: Briefcase },
-  { href: '/admin/skills', label: 'Skills', icon: Code },
   { href: '/admin/experience', label: 'Experience', icon: FileText },
-  { href: '/admin/certifications', label: 'Certifications', icon: Award },
-  { href: '/admin/settings', label: 'Settings', icon: Settings },
+  { href: '/admin/skills', label: 'Skills', icon: Code },
+  { href: '/admin/settings', label: 'Manage Site', icon: Settings },
 ]
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -61,13 +60,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             )
           })}
         </nav>
-        
-        <div className="p-4 border-t">
+        <div className="p-4 mt-auto">
           <form action={logout}>
-            <Button variant="outline" className="w-full justify-start text-muted-foreground hover:text-destructive" type="submit">
-              <LogOut className="mr-2 h-5 w-5" />
-              Sign Out
-            </Button>
+            <button 
+              type="submit" 
+              className="flex items-center w-full gap-3 p-2 rounded-xl hover:bg-destructive/10 transition-colors group relative overflow-hidden border border-transparent hover:border-destructive/20"
+            >
+              <div className="flex items-center justify-center w-10 h-10 rounded-full bg-muted group-hover:bg-destructive/20 transition-all z-10 shadow-sm group-hover:shadow-destructive/20">
+                <LogOut className="w-4 h-4 text-muted-foreground group-hover:text-destructive transition-all group-hover:translate-x-0.5" />
+              </div>
+              
+              <div className="flex flex-col items-start z-10">
+                <span className="text-sm font-semibold text-foreground group-hover:text-destructive transition-colors">Sign Out</span>
+              </div>
+            </button>
           </form>
         </div>
       </aside>
