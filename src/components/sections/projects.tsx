@@ -114,8 +114,16 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
                 className="relative group lg:sticky w-full bg-[#050505] border border-white/10 rounded-[2.5rem] p-6 lg:p-12 overflow-hidden shadow-2xl lg:top-[var(--sticky-top)]"
                 style={{ '--sticky-top': `${topOffset}px` } as React.CSSProperties}
               >
+                {/* Glass Shine Sweep on Hover */}
+                <motion.div 
+                  initial={{ x: "-100%", opacity: 0 }}
+                  whileHover={{ x: "200%", opacity: 1 }}
+                  transition={{ duration: 1.5, ease: "easeInOut" }}
+                  className="absolute inset-0 w-1/3 bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-12 pointer-events-none z-50"
+                />
+
                 {/* Background Glow Orb inside the solid card */}
-                <div aria-hidden="true" className={`absolute top-1/2 -translate-y-1/2 w-full max-w-lg h-[400px] bg-primary/20 blur-[120px] rounded-full pointer-events-none transition-opacity duration-700 opacity-20 group-hover:opacity-50 ${isEven ? 'right-0' : 'left-0'}`} />
+                <div aria-hidden="true" className={`absolute top-1/2 -translate-y-1/2 w-full max-w-lg h-[400px] bg-primary/30 blur-[120px] rounded-full pointer-events-none transition-all duration-700 opacity-20 group-hover:opacity-60 group-hover:scale-110 ${isEven ? 'right-0' : 'left-0'}`} />
 
                 <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center z-10">
                   
@@ -130,7 +138,7 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
                       <div className={`h-px flex-1 transition-colors duration-500 from-white/10 via-white/5 to-transparent group-hover:from-blue-500/30 ${!isEven ? 'bg-gradient-to-r lg:bg-gradient-to-l' : 'bg-gradient-to-r'}`}></div>
                     </div>
 
-                    <h3 className="text-4xl lg:text-5xl font-bold mb-6 tracking-tight transition-all duration-500 bg-clip-text text-transparent bg-gradient-to-r from-white to-white group-hover:from-blue-400 group-hover:to-emerald-400 group-hover:translate-x-2">
+                    <h3 className="text-4xl lg:text-5xl font-bold mb-6 tracking-tight transition-all duration-500 bg-clip-text text-transparent bg-gradient-to-r from-white to-white group-hover:from-blue-400 group-hover:to-emerald-400 group-hover:translate-x-3 group-hover:scale-[1.02] origin-left">
                       {project.title}
                     </h3>
                     
@@ -138,26 +146,49 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
                       {project.description}
                     </p>
                     
-                    <div className="flex flex-wrap gap-2.5 mb-10">
-                      {project.tags?.map(t => (
-                        <span key={t} className="flex items-center gap-2 text-xs font-medium text-slate-300 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.02)] select-none hover:bg-white/10 transition-colors">
+                    <div className="flex flex-wrap gap-3 mb-10">
+                      {project.tags?.map((t, i) => (
+                        <motion.span 
+                          key={t}
+                          animate={{ y: [0, -6, 0] }}
+                          transition={{ 
+                            duration: 4, 
+                            repeat: Infinity, 
+                            ease: "easeInOut",
+                            delay: i * 0.2
+                          }}
+                          className="flex items-center gap-2 text-xs font-medium text-slate-300 bg-white/5 border border-white/10 px-3.5 py-1.5 rounded-full shadow-[0_0_15px_rgba(255,255,255,0.03)] select-none hover:bg-white/10 hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all cursor-default"
+                        >
                           <TechIcon name={t} className="w-4 h-4" />
                           {t}
-                        </span>
+                        </motion.span>
                       ))}
                     </div>
                     
                     <div className="flex flex-wrap items-center gap-6">
                       {project.live_url && (
-                        <a 
-                          href={project.live_url} 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
-                          className="flex items-center gap-3 px-6 py-3 rounded-full bg-white text-black font-semibold hover:scale-105 hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] transition-all duration-300"
-                        >
-                          Visit Live
-                          <ArrowUpRight size={18} strokeWidth={2.5} />
-                        </a>
+                        <div className="relative">
+                          <motion.div 
+                            animate={{ scale: [1, 1.25], opacity: [0.4, 0] }}
+                            transition={{ duration: 3, repeat: Infinity, ease: "easeOut" }}
+                            className="absolute inset-0 rounded-full border-2 border-white/40 pointer-events-none group-hover:border-primary/50"
+                          />
+                          <a 
+                            href={project.live_url} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="group/btn relative flex items-center gap-3 px-6 py-3 rounded-full bg-white text-black font-semibold hover:scale-105 hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] transition-all duration-300 z-10 overflow-hidden"
+                          >
+                            <motion.div 
+                              initial={{ x: "-100%" }}
+                              whileHover={{ x: "200%" }}
+                              transition={{ duration: 1, ease: "easeInOut", repeat: Infinity, repeatDelay: 0.5 }}
+                              className="absolute inset-0 w-1/2 bg-gradient-to-r from-transparent via-black/10 to-transparent skew-x-12 pointer-events-none" 
+                            />
+                            <span className="relative z-10">Visit Live</span>
+                            <ArrowUpRight size={18} strokeWidth={2.5} className="group-hover/btn:rotate-45 transition-transform relative z-10" />
+                          </a>
+                        </div>
                       )}
                       {project.github_url && !project.github_url.startsWith('HIDE_') && (
                         <a 

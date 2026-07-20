@@ -131,15 +131,28 @@ export function HeroSection() {
               transition={{ duration: 0.5, delay: 0.3 }}
               className="flex flex-col sm:flex-row gap-5 w-full sm:w-auto"
             >
-              <a
-                href="#contact"
-                className="group relative inline-flex items-center justify-center px-8 py-4 font-mono text-sm font-bold text-primary bg-[#050505] border border-primary/40 rounded-lg overflow-hidden transition-all hover:bg-primary/5 hover:border-primary hover:shadow-[0_0_25px_rgba(var(--primary),0.3)] hover:-translate-y-1"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/10 to-primary/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out" />
-                <span className="mr-3 text-pink-500 font-black text-base">{">"}</span>
-                <span className="tracking-wider text-base">Let's Talk</span>
-                <span className="ml-2 w-2.5 h-5 bg-primary animate-pulse opacity-80 group-hover:opacity-100 transition-opacity duration-300"></span>
-              </a>
+              <div className="relative w-full sm:w-auto">
+                {/* Holographic Button Ripples */}
+                <motion.div 
+                  animate={{ scale: [1, 1.25], opacity: [0.6, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeOut" }}
+                  className="absolute inset-0 rounded-lg border border-primary/50 pointer-events-none"
+                />
+                <motion.div 
+                  animate={{ scale: [1, 1.25], opacity: [0.6, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeOut", delay: 2 }}
+                  className="absolute inset-0 rounded-lg border border-primary/50 pointer-events-none"
+                />
+                <a
+                  href="#contact"
+                  className="group relative inline-flex items-center justify-center px-8 py-4 font-mono text-sm font-bold text-primary bg-[#050505] border border-primary/40 rounded-lg overflow-hidden transition-all hover:bg-primary/5 hover:border-primary hover:shadow-[0_0_25px_rgba(var(--primary),0.3)] hover:-translate-y-1 z-10 w-full"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/10 to-primary/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out" />
+                  <span className="mr-3 text-pink-500 font-black text-base">{">"}</span>
+                  <span className="tracking-wider text-base">Let's Talk</span>
+                  <span className="ml-2 w-2.5 h-5 bg-primary animate-pulse opacity-80 group-hover:opacity-100 transition-opacity duration-300"></span>
+                </a>
+              </div>
               
               <a
                 href="#projects"
@@ -156,13 +169,25 @@ export function HeroSection() {
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.2, type: "spring" }}
-            className="relative mx-auto w-full lg:max-w-xl mb-10 lg:mb-0"
+            className="relative mx-auto w-full lg:max-w-xl mb-10 lg:mb-0 group"
           >
+            {/* Holographic Window Ripples */}
+            <motion.div 
+              animate={{ scale: [1, 1.05], opacity: [0.5, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeOut" }}
+              className="absolute inset-0 rounded-[24px] border-[2px] border-blue-500/40 pointer-events-none z-[1]"
+            />
+            <motion.div 
+              animate={{ scale: [1, 1.05], opacity: [0.5, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeOut", delay: 2.5 }}
+              className="absolute inset-0 rounded-[24px] border-[2px] border-purple-500/40 pointer-events-none z-[1]"
+            />
+
             {/* Background glow behind editor */}
-            <div className="absolute -inset-2 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-[24px] blur-xl opacity-20 group-hover:opacity-40 transition duration-1000" />
+            <div className="absolute -inset-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-[24px] blur-xl opacity-30 group-hover:opacity-50 transition duration-1000 z-[0]" />
             
             {/* The Editor Window Wrapper with Animated Border */}
-            <div className="relative rounded-2xl p-[1px] overflow-hidden shadow-2xl">
+            <div className="relative rounded-2xl p-[1px] overflow-hidden shadow-2xl z-10">
               {/* Rotating Gradient */}
               <motion.div 
                 className="absolute inset-[-100%] w-[300%] h-[300%] origin-center bg-[conic-gradient(from_0deg_at_50%_50%,#3b82f6_0%,transparent_10%,transparent_40%,#a855f7_50%,transparent_60%,transparent_90%,#06b6d4_100%)] opacity-80"
