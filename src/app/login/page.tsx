@@ -169,7 +169,7 @@ export default function LoginPage() {
                 className="p-3 bg-white/5 rounded-full border border-white/10 hover:border-primary/50 hover:bg-primary/10 hover:text-primary text-slate-400 transition-all duration-300 group"
                 aria-label="Back to Portfolio"
               >
-                <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+                <ArrowLeft className="w-5 h-5 transition-transform" />
               </Link>
             </div>
           </CardContent>

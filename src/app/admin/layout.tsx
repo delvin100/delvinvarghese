@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Briefcase, Code, FileText, Award, LogOut, Settings } from 'lucide-react'
+import { LayoutDashboard, Briefcase, Code, FileText, Award, LogOut, Settings, Users } from 'lucide-react'
 import { logout } from '@/app/actions/auth'
 import { Button } from '@/components/ui/button'
 
@@ -11,6 +11,7 @@ const navItems = [
   { href: '/admin/projects', label: 'Projects', icon: Briefcase },
   { href: '/admin/experience', label: 'Experience', icon: FileText },
   { href: '/admin/skills', label: 'Skills', icon: Code },
+  { href: '/admin/users', label: 'Users', icon: Users },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
 ]
 
