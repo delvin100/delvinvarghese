@@ -27,6 +27,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "i.postimg.cc",
       },
+      {
+        protocol: "https",
+        hostname: "plain-apac-prod-public.komododecks.com",
+      },
     ],
     qualities: [25, 50, 75, 90, 100],
     unoptimized: process.env.NODE_ENV === 'development',
