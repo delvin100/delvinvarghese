@@ -30,12 +30,15 @@ export function Search() {
       .catch(console.error);
   }, []);
 
-  // Handle Cmd+K shortcut
+  // Handle Cmd+K shortcut and Escape key
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         setIsOpen((open) => !open);
+      }
+      if (e.key === "Escape") {
+        setIsOpen(false);
       }
     };
     document.addEventListener("keydown", down);
@@ -83,16 +86,25 @@ export function Search() {
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center pt-[20vh] sm:pt-[10vh]">
+        <div className="fixed inset-0 z-50">
           {/* Backdrop */}
           <div 
-            className="fixed inset-0 bg-background/80 backdrop-blur-sm transition-opacity"
+            className="absolute inset-0 bg-background/80 backdrop-blur-sm transition-opacity"
             onClick={() => setIsOpen(false)}
           />
           
-          {/* Modal */}
-          <div className="relative w-full max-w-xl bg-card border border-border rounded-lg shadow-xl overflow-hidden glass animate-in fade-in slide-in-from-top-4">
-            <div className="flex items-center px-4 border-b border-border">
+          {/* Modal Layout Container */}
+          <div className="absolute inset-x-0 top-0 pt-[20vh] sm:pt-[10vh] pointer-events-none">
+            <div className="container max-w-screen-2xl mx-auto px-4 md:px-8 md:grid md:grid-cols-[220px_minmax(0,1fr)] lg:grid-cols-[240px_minmax(0,1fr)]">
+              {/* Spacer for Sidebar */}
+              <div className="hidden md:block" />
+              
+              {/* Main Content Area Alignment */}
+              <div className="w-full">
+                <div className="mx-auto max-w-[800px] w-full px-4 md:px-0 pointer-events-auto">
+                  {/* Modal */}
+                  <div className="relative w-full bg-card border border-border rounded-lg shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-4">
+                    <div className="flex items-center px-4 border-b border-border">
               <SearchIcon className="w-5 h-5 text-muted-foreground" />
               <input
                 ref={inputRef}
@@ -104,9 +116,9 @@ export function Search() {
               />
               <button 
                 onClick={() => setIsOpen(false)}
-                className="text-xs text-muted-foreground hover:text-foreground border border-border rounded px-1.5 py-0.5"
+                className="text-xs text-muted-foreground hover:text-foreground border border-border rounded px-2 py-1"
               >
-                ESC
+                Close
               </button>
             </div>
 
@@ -148,6 +160,10 @@ export function Search() {
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
       )}
     </>
   );

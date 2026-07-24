@@ -25,11 +25,8 @@ export default function GitLandingPage() {
           Everything you need to master Git, GitHub and version control best practices. From first commit to advanced workflows.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 mt-6">
-          <Link href="/git/what-is-git" className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2">
+          <Link href="/git/what-is-git" className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring bg-blue-600 text-white shadow hover:bg-blue-700 h-9 px-4 py-2">
             Get Started
-          </Link>
-          <Link href="/git/cheat-sheet" className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2">
-            Printable Cheat Sheet
           </Link>
         </div>
       </div>
